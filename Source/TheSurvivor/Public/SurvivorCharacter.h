@@ -71,12 +71,9 @@ class THESURVIVOR_API ASurvivorCharacter : public ACharacter
 	UCameraComponent* FollowCamera;
 #pragma endregion
 	#pragma region Inputs
-	/** Input mapping context used when the player is in a challenge. */
+	/** this the main mapping context that will be used tha majority of the time. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputMappingContext* ChallengeMappingContext;
-	/** Input mapping context used when the player is free-roaming (not in a challenge). */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputMappingContext* FreeMappingContext;
+	UInputMappingContext* MainMappginContext;
 	/** Input action for jumping. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* JumpAction;
