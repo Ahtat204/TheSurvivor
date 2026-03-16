@@ -40,7 +40,7 @@ void ASurvivorCharacter::BeginPlay()
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<
 			UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
-			Subsystem->AddMappingContext(FreeMappingContext, 0);
+			Subsystem->AddMappingContext(MainMappginContext, 0);
 		}
 	}
 }
