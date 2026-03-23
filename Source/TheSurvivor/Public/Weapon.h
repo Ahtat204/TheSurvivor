@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "TheSurvivor/TheSurvivor.h"
 #include "Weapon.generated.h"
 
 class UNiagaraComponent;
@@ -11,9 +12,20 @@ class ABullet;
 class UCapsuleComponent;
 class UProjectileMovementComponent;
 
+
+/**
+ * represents the type/size of the weapon ,used in animation to choose the proper animation for the weapon
+ */
+UENUM(BlueprintType)
+enum class EWeaponType:uint8
+{
+	Pistol=0 UMETA(DisplayName="Pistol"),
+	Rifle=1 UMETA(DisplayName="Rifle"),
+	Smg=2 UMETA(DisplayName="SMG"),
+};
 /**
  * @class AWeapon
- * @brief Base class for all weapons in the ShootTrainer game.
+ * @brief Base class for all weapons in the  game.
  *
  * This class represents a generic weapon (e.g., pistol, rifle, shotgun) and provides
  * the foundation for firing bullets, handling ammunition, and triggering visual/audio effects.
@@ -112,23 +124,22 @@ class ABullet : public AActor
 public:
 	/** Default constructor. */
 	explicit ABullet(const FObjectInitializer& FObjectInitializer);
-
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Enumerations")
+	EWeaponType WeaponType;
 	/** @return The projectile movement component (controls flight physics). */
-	[[nodiscard]] UProjectileMovementComponent* GetProjectileMovementComponent() const
-	{
-		return ProjectileMovementComponent;
-	}
-
+	NODISCARD UProjectileMovementComponent* GetProjectileMovementComponent() const{return ProjectileMovementComponent;}
 private:
 	/** Static mesh representing the bullet's visual appearance. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UStaticMeshComponent> StaticMeshComponent;
-
 	/** Component responsible for projectile movement (speed, gravity, trajectory). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovementComponent;
-
 	/** Capsule collider for hit detection and overlaps. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Components", meta = (AllowPrivateAccess = "true"))
 	UCapsuleComponent* CapsuleComponent;
+	FString WeaponName;
+public:
+	NODISCARD FString GetWeaponName() const{return WeaponName;}
+	void SetWeaponName(const FString& Weaponname){this->WeaponName = Weaponname;}
 };

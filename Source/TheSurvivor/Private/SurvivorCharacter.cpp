@@ -2,6 +2,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "WeaponSystemComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -11,9 +12,6 @@
 ASurvivorCharacter::ASurvivorCharacter(const FObjectInitializer& ObjectInitialize)
 {
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-	bUseControllerRotationPitch = false;
-	bUseControllerRotationYaw = true;
-	bUseControllerRotationRoll = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
 	GetCharacterMovement()->JumpZVelocity = 700.f;
@@ -21,14 +19,18 @@ ASurvivorCharacter::ASurvivorCharacter(const FObjectInitializer& ObjectInitializ
 	GetCharacterMovement()->MaxWalkSpeed = 500.f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
+	GetCharacterMovement()->bOrientRotationToMovement = false;
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = true;
+	bUseControllerRotationRoll = false;
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	WeaponSystemComponent=CreateDefaultSubobject<UWeaponSystemComponent>("WeaponSystemComponent");
 	CameraBoom->SetupAttachment(GetMesh(),TEXT("head"));
 	CameraBoom->TargetArmLength = 400.0f; 
 	CameraBoom->bUsePawnControlRotation = true; 
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
-	FollowCamera->bUsePawnControlRotation = false; 
-	GetCharacterMovement()->bOrientRotationToMovement = false;
+	FollowCamera->bUsePawnControlRotation = false;
 }
 
 void ASurvivorCharacter::BeginPlay()
