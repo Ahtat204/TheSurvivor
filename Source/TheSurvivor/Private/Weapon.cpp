@@ -86,3 +86,7 @@ ABullet::ABullet(const FObjectInitializer& FObjectInitializer)
 	CapsuleComponent->SetCapsuleRadius(30.944208f);
 }
 
+
+
+
+
