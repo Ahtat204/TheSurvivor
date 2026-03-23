@@ -2,10 +2,12 @@
 #include "CoreMinimal.h"
 #include "InputActionValue.h"
 #include "GameFramework/Character.h"
+#include "TheSurvivor/TheSurvivor.h"
 #include "SurvivorCharacter.generated.h"
-#define NODISCARD [[nodiscard]]
 
 
+
+class UWeaponSystemComponent;
 class USoundCue;
 class UInputMappingContext;
 class UInputAction;
@@ -64,13 +66,16 @@ class THESURVIVOR_API ASurvivorCharacter : public ACharacter
 	GENERATED_BODY()
 #pragma region Components
 	/** Camera boom for positioning the follow camera behind the player. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components, meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* CameraBoom;
 	/** Follow camera providing the player's first-person view. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
+	/** the Component responsible for Weapons functionalities ,such as storing weapons , showing player weapons , choosing weapon*/
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components, meta = (AllowPrivateAccess = "true"))
+	UWeaponSystemComponent* WeaponSystemComponent;
 #pragma endregion
-	#pragma region Inputs
+#pragma region Inputs
 	/** this the main mapping context that will be used tha majority of the time. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* MainMappginContext;
@@ -111,11 +116,8 @@ class THESURVIVOR_API ASurvivorCharacter : public ACharacter
 	EWeaponState CurrentWeaponState;
 #pragma endregion
 public:
-	// Sets default values for this character's properties
 	explicit ASurvivorCharacter(const FObjectInitializer& ObjectInitialize);
-
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 #pragma region InputsFunctions
 	/** Handles reloading input. */
@@ -124,6 +126,7 @@ protected:
 	void Shoot(const FInputActionValue& Value);
 	/** Handles aiming input. */
 	void Aim(const FInputActionValue& Value);
+	/** handles Movements inputs */
 	void Move(const FInputActionValue& Value);
 	/** Handles looking input (camera rotation). */
 	void Look(const FInputActionValue& Value);
@@ -131,14 +134,12 @@ protected:
 #pragma endregion
 
 public:
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
 #pragma region Getters&setters
 	/** @return The camera boom subObject. */
 	NODISCARD FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** @return The follow camera subObject. */
 	NODISCARD FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 #pragma endregion
-
-	// Called to bind functionality to input
 };

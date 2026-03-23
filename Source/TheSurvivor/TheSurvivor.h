@@ -3,4 +3,5 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
+#define NODISCARD [[nodiscard]]
+#define MAYBEUNUSED [[maybe_unused]

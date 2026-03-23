@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "WeaponSystemComponent.h"
+#include"WeaponSystemComponent.h"
 #include<Weapon.h>
 
 // Sets default values for this component's properties
@@ -11,37 +11,38 @@ UWeaponSystemComponent::UWeaponSystemComponent(const FObjectInitializer& FObject
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 }
-
-
-// Called when the game starts
 void UWeaponSystemComponent::BeginPlay()
 {
 	Super::BeginPlay();
 }
-
-
-// Called every frame
 void UWeaponSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
-
-AWeapon* UWeaponSystemComponent::ChooseWeapon(int16 Index) const
+AWeapon* UWeaponSystemComponent::GetWeapon(uint16 Index) const
 {
-	return nullptr;//TODO:still not implmented
+	if (Index >= Weapons.Num())
+	{
+		return nullptr;
+	}
+	return Weapons[Index];
 }
-
-TArray<AWeapon*> UWeaponSystemComponent::GetAllWeapons() const
+TArray<AWeapon*>& UWeaponSystemComponent::GetAllWeapons() 
 {
-	return Weapons; //TODO:still not implmented
+	return Weapons;
 }
-
-TArray<AWeapon*> UWeaponSystemComponent::AddWeapon(AWeapon* newWeapon)
+TArray<AWeapon*>& UWeaponSystemComponent::AddWeapon(AWeapon* newWeapon)
 {
-	return Weapons;//TODO:still not implmented
+	if (newWeapon==nullptr){return Weapons;}
+	Weapons.Add(newWeapon);
+	return Weapons;
 }
-
 TArray<AWeapon*> UWeaponSystemComponent::RemoveWeapon(int16 Index)
 {
-	return Weapons;//TODO:still not implmented
+	if (Index >= Weapons.Num())
+	{
+		return Weapons;
+	}
+	Weapons.RemoveAt(Index);
+	return Weapons;
 }

@@ -4,22 +4,24 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "TheSurvivor/TheSurvivor.h"
 #include "WeaponSystemComponent.generated.h"
 
 
 class AWeapon;
 
 /**
- * the class Component responsible for Managing the Weapons the Player possess.
- * it contains an Array of pointers to all 
+ * The component responsible for Managing the Weapons the Player possess.
+ * it contains an Array of pointers to all ,and it currently handles Adding a weapon (pickup) deleting a weapon(dropping),Choosing a weapon from the player's possessed weapons 
  */
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class THESURVIVOR_API UWeaponSystemComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon", meta = (AllowPrivateAccess = "true"))
 	TArray<AWeapon*> Weapons;
-	TObjectPtr<AWeapon> CurrentWeapon;
 public:	
 	explicit UWeaponSystemComponent(const FObjectInitializer& FObjectInitializer);
 protected:
@@ -27,9 +29,9 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	AWeapon* ChooseWeapon(int16 Index) const; 
-	TArray<AWeapon*> GetAllWeapons() const;
-	TArray<AWeapon*> AddWeapon(AWeapon* newWeapon);
+	NODISCARD AWeapon* GetWeapon(uint16 Index) const; 
+	inline TArray<AWeapon*>& GetAllWeapons() ;
+	TArray<AWeapon*>& AddWeapon(AWeapon* newWeapon);
 	TArray<AWeapon*> RemoveWeapon(int16 Index);
 		
 };
