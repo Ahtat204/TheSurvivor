@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "TheSurvivor/TheSurvivor.h"
 #include "Weapon.generated.h"
 
 class UNiagaraComponent;
@@ -114,7 +115,7 @@ public:
 	explicit ABullet(const FObjectInitializer& FObjectInitializer);
     
 	/** @return The projectile movement component (controls flight physics). */
-	[[nodiscard]] UProjectileMovementComponent* GetProjectileMovementComponent() const
+	NODISCARD UProjectileMovementComponent* GetProjectileMovementComponent() const
 	{
 		return ProjectileMovementComponent;
 	}
@@ -134,6 +135,6 @@ private:
 	FString WeaponName;
 
 public:
-	[[nodiscard]] FString GetWeaponName() const{return WeaponName;}
+	NODISCARD FString GetWeaponName() const{return WeaponName;}
 	void SetWeaponName(const FString& Weaponname){this->WeaponName = Weaponname;}
 };
