@@ -112,7 +112,7 @@ class ABullet : public AActor
 public:
 	/** Default constructor. */
 	explicit ABullet(const FObjectInitializer& FObjectInitializer);
-
+    
 	/** @return The projectile movement component (controls flight physics). */
 	[[nodiscard]] UProjectileMovementComponent* GetProjectileMovementComponent() const
 	{
@@ -131,4 +131,9 @@ private:
 	/** Capsule collider for hit detection and overlaps. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Components", meta = (AllowPrivateAccess = "true"))
 	UCapsuleComponent* CapsuleComponent;
+	FString WeaponName;
+
+public:
+	[[nodiscard]] FString GetWeaponName() const{return WeaponName;}
+	void SetWeaponName(const FString& Weaponname){this->WeaponName = Weaponname;}
 };
