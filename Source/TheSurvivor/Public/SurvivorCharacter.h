@@ -6,13 +6,27 @@
 #include "SurvivorCharacter.generated.h"
 
 
-
+class AWeapon;
 class UWeaponSystemComponent;
 class USoundCue;
 class UInputMappingContext;
 class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
+
+
+
+UENUM(BlueprintType)
+enum class ECharacterState : uint8
+{
+	Idle = 0 UMETA(DisplayName = "Idle"),
+	Walk=1 UMETA(DisplayName = "Walk"),
+	Run=2 UMETA(DisplayName = "Run"),
+	Jump=3 UMETA(DisplayName = "Jump"),
+	Sprint=4 UMETA(DisplayName = "Sprint"),
+};
+
+
 
 /**
  * @brief Represents the current weapon-related state of the player.
@@ -39,7 +53,7 @@ enum class EWeaponState : uint8
 };
 /**
  * @class ASurvivorCharacter
- * @brief Main player character class for the ShootTrainer game.
+ * @brief Main player character class for the  game.
  *
  * This class extends ACharacter to represent the player in a first-person
  * shooter training environment. It defines camera setup, input bindings,
@@ -114,6 +128,8 @@ class THESURVIVOR_API ASurvivorCharacter : public ACharacter
 	/** Current weapon state of the player (e.g., Armed, Firing, Reloading). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerState", meta = (AllowPrivateAccess = "true"))
 	EWeaponState CurrentWeaponState;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerState", meta = (AllowPrivateAccess = "true"))
+	ECharacterState CharacterState;
 #pragma endregion
 public:
 	explicit ASurvivorCharacter(const FObjectInitializer& ObjectInitialize);
@@ -142,4 +158,7 @@ public:
 	/** @return The follow camera subObject. */
 	NODISCARD FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 #pragma endregion
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void AttachWeapon(AWeapon* Weapon);
 };
