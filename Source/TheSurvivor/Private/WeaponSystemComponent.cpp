@@ -21,7 +21,7 @@ void UWeaponSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 }
 AWeapon* UWeaponSystemComponent::GetWeapon(uint16 Index) const
 {
-	if (Index >= Weapons.Num())
+	if (Index >= Weapons.Num() )
 	{
 		return nullptr;
 	}
@@ -34,6 +34,11 @@ TArray<AWeapon*>& UWeaponSystemComponent::GetAllWeapons()
 TArray<AWeapon*>& UWeaponSystemComponent::AddWeapon(AWeapon* newWeapon)
 {
 	if (newWeapon==nullptr){return Weapons;}
+	if (Weapons.Num() >= 10)
+	{
+		Weapons[10]=newWeapon;
+		return Weapons;
+	}
 	Weapons.Add(newWeapon);
 	return Weapons;
 }
