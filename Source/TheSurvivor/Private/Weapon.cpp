@@ -1,12 +1,12 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
-#include "Weapon.h"
+#include <Weapon.h>
+#include <Components/CapsuleComponent.h>
 #include "Niagara/Public/NiagaraComponent.h"
 #include "Components/SphereComponent.h"
+#include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 
-// Sets default values
+
 AWeapon::AWeapon(const FObjectInitializer& FObjectInitializer)
 {
  	
@@ -24,8 +24,6 @@ AWeapon::AWeapon(const FObjectInitializer& FObjectInitializer)
 	NiagraComponent->SetupAttachment(SkeletalMeshComponent);
 
 }
-
-// Called when the game starts or when spawned
 void AWeapon::BeginPlay()
 {
 	Super::BeginPlay();
@@ -41,6 +39,23 @@ void AWeapon::Tick(float DeltaTime)
 
 void AWeapon::FireBullet()
 {
+	if (CurrentAmmo==0 && GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Red, "Out Of Ammo , Please press R to Reload");
+	}
+	const auto SpawnLocation = this->SkeletalMeshComponent->GetSocketLocation("Muzzle"); //TODO:since I plan to add more weapons,I should remove this bad hardcoding
+	const auto SpawnRotation = this->SkeletalMeshComponent->GetSocketRotation("Muzzle");//TODO:here too
+
+	if (CurrentAmmo > 0)
+	{
+		if (BulletClass)
+		{
+			const FActorSpawnParameters SpawnParams;
+			auto Bullet = GetWorld()->SpawnActor<ABullet>(BulletClass, SpawnLocation, SpawnRotation, SpawnParams);
+			UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation(), 3,5);
+			CurrentAmmo--;
+		}
+	}
 }
 
 void AWeapon::NotifyActorBeginOverlap(AActor* OtherActor)
@@ -50,5 +65,24 @@ void AWeapon::NotifyActorBeginOverlap(AActor* OtherActor)
 
 ABullet::ABullet(const FObjectInitializer& FObjectInitializer)
 {
+	SetActorRelativeRotation(FRotator(0, 0, 0));
+	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("StaticMeshComponent");
+	if (StaticMeshComponent)
+	{
+		RootComponent = StaticMeshComponent;
+	}
+	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovementComponent");
+	if (ProjectileMovementComponent)
+	{
+		ProjectileMovementComponent->InitialSpeed = 10000.f;
+		ProjectileMovementComponent->MaxSpeed = 0.0f;
+		ProjectileMovementComponent->bRotationFollowsVelocity = false;
+		ProjectileMovementComponent->bShouldBounce = true;
+		ProjectileMovementComponent->ProjectileGravityScale = 0.f;
+	}
+	CapsuleComponent=CreateDefaultSubobject<UCapsuleComponent>("CollisionCapsule");
+	CapsuleComponent->SetupAttachment(RootComponent);
+	CapsuleComponent->SetCapsuleHalfHeight(81.08f);
+	CapsuleComponent->SetCapsuleRadius(30.944208f);
 }
 
