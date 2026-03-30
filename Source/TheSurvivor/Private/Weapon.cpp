@@ -27,6 +27,7 @@ AWeapon::AWeapon(const FObjectInitializer& FObjectInitializer)
 void AWeapon::BeginPlay()
 {
 	Super::BeginPlay();
+
 	
 }
 
@@ -36,6 +37,7 @@ void AWeapon::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
+
 
 void AWeapon::FireBullet()
 {
@@ -85,4 +87,8 @@ ABullet::ABullet(const FObjectInitializer& FObjectInitializer)
 	CapsuleComponent->SetCapsuleHalfHeight(81.08f);
 	CapsuleComponent->SetCapsuleRadius(30.944208f);
 }
+
+
+
+
 

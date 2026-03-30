@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "TheSurvivor/TheSurvivor.h"
 #include "Weapon.generated.h"
 
 class UNiagaraComponent;
@@ -11,9 +12,11 @@ class ABullet;
 class UCapsuleComponent;
 class UProjectileMovementComponent;
 
+
+
 /**
  * @class AWeapon
- * @brief Base class for all weapons in the ShootTrainer game.
+ * @brief Base class for all weapons in the  game.
  *
  * This class represents a generic weapon (e.g., pistol, rifle, shotgun) and provides
  * the foundation for firing bullets, handling ammunition, and triggering visual/audio effects.
@@ -59,6 +62,13 @@ public:
 	FORCEINLINE void ResetAmmo() { CurrentAmmo = MagazineSize; }
 #pragma endregion
 #pragma region Fields
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, meta = (AllowPrivateAccess = "true"))
+	UAnimMontage* ReloadAnimMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Sounds", meta = (AllowPrivateAccess = "true"))
+	USoundCue* ReloadSound;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Enumerations")
+	EWeaponType WeaponType;
 	/** Skeletal mesh for the weapon (e.g., pistol mesh). */
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
 	TObjectPtr<USkeletalMeshComponent> SkeletalMeshComponent;
@@ -112,23 +122,20 @@ class ABullet : public AActor
 public:
 	/** Default constructor. */
 	explicit ABullet(const FObjectInitializer& FObjectInitializer);
-
 	/** @return The projectile movement component (controls flight physics). */
-	[[nodiscard]] UProjectileMovementComponent* GetProjectileMovementComponent() const
-	{
-		return ProjectileMovementComponent;
-	}
-
+	NODISCARD UProjectileMovementComponent* GetProjectileMovementComponent() const{return ProjectileMovementComponent;}
 private:
 	/** Static mesh representing the bullet's visual appearance. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UStaticMeshComponent> StaticMeshComponent;
-
 	/** Component responsible for projectile movement (speed, gravity, trajectory). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovementComponent;
-
 	/** Capsule collider for hit detection and overlaps. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Components", meta = (AllowPrivateAccess = "true"))
 	UCapsuleComponent* CapsuleComponent;
+	MAYBEUNUSED FString WeaponName;
+public:
+	NODISCARD FString GetWeaponName() const{return WeaponName;}
+	void SetWeaponName(const FString& Name){this->WeaponName = Name;}
 };
