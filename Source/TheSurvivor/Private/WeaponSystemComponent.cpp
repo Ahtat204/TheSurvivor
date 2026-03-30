@@ -1,10 +1,8 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include"WeaponSystemComponent.h"
 #include<Weapon.h>
+#include <SurvivorCharacter.h>
 
-// Sets default values for this component's properties
+
 UWeaponSystemComponent::UWeaponSystemComponent(const FObjectInitializer& FObjectInitializer)
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -12,12 +10,13 @@ UWeaponSystemComponent::UWeaponSystemComponent(const FObjectInitializer& FObject
 void UWeaponSystemComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	Owner =CastChecked<ASurvivorCharacter>(GetOwner());
 }
 void UWeaponSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
-AWeapon* UWeaponSystemComponent::GetWeapon(uint16 Index) const
+AWeapon* UWeaponSystemComponent::GetWeapon(const uint16 Index) const
 {
 	if (Index >= Weapons.Num() )
 	{
@@ -25,7 +24,7 @@ AWeapon* UWeaponSystemComponent::GetWeapon(uint16 Index) const
 	}
 	return Weapons[Index];
 }
-TArray<AWeapon*>& UWeaponSystemComponent::GetAllWeapons() 
+const TArrayView<AWeapon*>& UWeaponSystemComponent::GetAllWeapons() 
 {
 	return Weapons;
 }
@@ -40,7 +39,7 @@ TArray<AWeapon*>& UWeaponSystemComponent::AddWeapon(AWeapon* newWeapon)
 	Weapons.Add(newWeapon);
 	return Weapons;
 }
-void UWeaponSystemComponent::FireAction(EWeaponState WeaponState) const
+void UWeaponSystemComponent::FireAction(const EWeaponState WeaponState) const
 {
 	if (CurrentWeapon!=nullptr)
 	{
@@ -62,9 +61,10 @@ void UWeaponSystemComponent::ReloadAction(EWeaponState WeaponState) const
 	}
 }
 
-bool UWeaponSystemComponent::CanPerformAction() const
+
+void UWeaponSystemComponent::AttachWeapon()
 {
-	return false;
+	
 }
 
 TArray<AWeapon*> UWeaponSystemComponent::RemoveWeapon(int16 Index)

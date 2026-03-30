@@ -58,9 +58,23 @@ enum class ECharacterState : uint8
 UENUM(BlueprintType, Category="Weapons", meta=(ToolTip="Represents the current weapon-related state of the player."))
 enum class EWeaponState : uint8
 {
+	/**
+	 * Indicate that the  character doesn't hold any weapon , it has nothing to do with the player running or walking or Idle state 
+	 */
 	Unarmed UMETA(DisplayName = "Unarmed"),
 	Armed UMETA(DisplayName = "Armed"),
 	Firing UMETA(DisplayName = "Firing"),
 	Reloading UMETA(DisplayName = "Reloading"),
 	Aiming UMETA(DisplayName = "Aiming"),
+};
+
+/**
+ * represents the type/size of the weapon ,used in animation to choose the proper animation for the weapon
+ */
+UENUM(BlueprintType)
+enum class EWeaponType:uint8
+{
+	Pistol=0 UMETA(DisplayName="Pistol"),
+	Rifle=1 UMETA(DisplayName="Rifle"),
+	Smg=2 UMETA(DisplayName="SMG"),
 };

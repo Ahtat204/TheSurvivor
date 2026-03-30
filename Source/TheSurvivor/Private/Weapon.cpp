@@ -27,6 +27,7 @@ AWeapon::AWeapon(const FObjectInitializer& FObjectInitializer)
 void AWeapon::BeginPlay()
 {
 	Super::BeginPlay();
+
 	
 }
 
@@ -36,6 +37,7 @@ void AWeapon::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
+
 
 void AWeapon::FireBullet()
 {

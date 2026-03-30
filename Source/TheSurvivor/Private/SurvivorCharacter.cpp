@@ -2,6 +2,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Weapon.h"
 #include "WeaponSystemComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -50,6 +51,16 @@ void ASurvivorCharacter::BeginPlay()
 
 void ASurvivorCharacter::Reload(const FInputActionValue& Value)
 {
+	const auto bIsReloading=Value.Get<bool>();
+	if (WeaponSystemComponent->CurrentWeapon->ReloadAnimMontage!=nullptr)
+	{
+		if (bIsReloading)
+		{
+			CurrentWeaponState=EWeaponState::Reloading;
+			PlayAnimMontage(WeaponSystemComponent->CurrentWeapon->ReloadAnimMontage);
+		}
+	}
+	CurrentWeaponState=EWeaponState::Aiming;
 }
 
 void ASurvivorCharacter::Tick(float DeltaTime)

@@ -13,16 +13,7 @@ class UCapsuleComponent;
 class UProjectileMovementComponent;
 
 
-/**
- * represents the type/size of the weapon ,used in animation to choose the proper animation for the weapon
- */
-UENUM(BlueprintType)
-enum class EWeaponType:uint8
-{
-	Pistol=0 UMETA(DisplayName="Pistol"),
-	Rifle=1 UMETA(DisplayName="Rifle"),
-	Smg=2 UMETA(DisplayName="SMG"),
-};
+
 /**
  * @class AWeapon
  * @brief Base class for all weapons in the  game.
@@ -71,7 +62,8 @@ public:
 	FORCEINLINE void ResetAmmo() { CurrentAmmo = MagazineSize; }
 #pragma endregion
 #pragma region Fields
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, meta = (AllowPrivateAccess = "true"))
 	UAnimMontage* ReloadAnimMontage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Sounds", meta = (AllowPrivateAccess = "true"))
 	USoundCue* ReloadSound;
@@ -142,8 +134,8 @@ private:
 	/** Capsule collider for hit detection and overlaps. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Components", meta = (AllowPrivateAccess = "true"))
 	UCapsuleComponent* CapsuleComponent;
-	FString WeaponName;
+	MAYBEUNUSED FString WeaponName;
 public:
 	NODISCARD FString GetWeaponName() const{return WeaponName;}
-	void SetWeaponName(const FString& name){this->WeaponName = name;}
+	void SetWeaponName(const FString& Name){this->WeaponName = Name;}
 };
