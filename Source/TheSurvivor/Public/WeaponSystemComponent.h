@@ -1,7 +1,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "SurvivorCharacter.h"
 #include "Components/ActorComponent.h"
 #include "TheSurvivor/TheSurvivor.h"
 #include "WeaponSystemComponent.generated.h"
