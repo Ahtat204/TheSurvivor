@@ -71,6 +71,12 @@ public:
 	FORCEINLINE void ResetAmmo() { CurrentAmmo = MagazineSize; }
 #pragma endregion
 #pragma region Fields
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UAnimMontage* ReloadAnimMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Sounds", meta = (AllowPrivateAccess = "true"))
+	USoundCue* ReloadSound;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Enumerations")
+	EWeaponType WeaponType;
 	/** Skeletal mesh for the weapon (e.g., pistol mesh). */
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
 	TObjectPtr<USkeletalMeshComponent> SkeletalMeshComponent;
@@ -124,8 +130,6 @@ class ABullet : public AActor
 public:
 	/** Default constructor. */
 	explicit ABullet(const FObjectInitializer& FObjectInitializer);
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Enumerations")
-	EWeaponType WeaponType;
 	/** @return The projectile movement component (controls flight physics). */
 	NODISCARD UProjectileMovementComponent* GetProjectileMovementComponent() const{return ProjectileMovementComponent;}
 private:
@@ -141,5 +145,5 @@ private:
 	FString WeaponName;
 public:
 	NODISCARD FString GetWeaponName() const{return WeaponName;}
-	void SetWeaponName(const FString& Weaponname){this->WeaponName = Weaponname;}
+	void SetWeaponName(const FString& name){this->WeaponName = name;}
 };

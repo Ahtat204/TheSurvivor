@@ -59,11 +59,31 @@ void ASurvivorCharacter::Tick(float DeltaTime)
 
 void ASurvivorCharacter::Shoot(const FInputActionValue& Value)
 {
-	
+	const bool bIsShooting = Value.Get<bool>();
+
+	if (bIsShooting && CurrentWeaponState == EWeaponState::Aiming)
+	{
+		CurrentWeaponState = EWeaponState::Firing;
+		WeaponSystemComponent->FireAction(CurrentWeaponState);
+	}
+	else if (!bIsShooting && CurrentWeaponState == EWeaponState::Firing)
+	{
+		/** * Here is the "Magic": We check the persistent boolean 
+		 * to see if the player is STILL holding Aim.
+		 */
+		CurrentWeaponState = bIsAimingInputActive ? EWeaponState::Aiming : EWeaponState::Armed;
+        
+		WeaponSystemComponent->FireAction(CurrentWeaponState);
+	}
 }
 
 void ASurvivorCharacter::Aim(const FInputActionValue& Value)
 {
+	bIsAimingInputActive=Value.Get<bool>();
+	if (bIsAimingInputActive && CurrentWeaponState==EWeaponState::Armed)
+	{
+		CurrentWeaponState=EWeaponState::Aiming;
+	}
 }
 
 void ASurvivorCharacter::Move(const FInputActionValue& Value)

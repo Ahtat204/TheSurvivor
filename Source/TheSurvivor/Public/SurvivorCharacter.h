@@ -16,17 +16,40 @@ class UCameraComponent;
 
 
 
+/**
+ * @enum ECharacterState
+ * @brief Defines the high-level traversal and locomotion state of the character.
+ * * This enum serves as the primary driver for the Animation Blueprint (AnimBP) state machine.
+ * It distinguishes between grounded locomotion, airborne states, and specialized 
+ * traversal actions (Climbing, Sprinting).
+ */
 UENUM(BlueprintType)
 enum class ECharacterState : uint8
 {
+	/** Standing still or minimal movement; typical baseline state. */
 	Idle = 0 UMETA(DisplayName = "Idle"),
-	Walk=1 UMETA(DisplayName = "Walk"),
-	Run=2 UMETA(DisplayName = "Run"),
-	Jump=3 UMETA(DisplayName = "Jump"),
-	Sprint=4 UMETA(DisplayName = "Sprint"),
+
+	/** Standard intentional movement, usually blended with Idle in a 1D/2D BlendSpace. */
+	Walk = 1 UMETA(DisplayName = "Walk"),
+
+	/** High-speed locomotion; typically the default 'forward' move state for the survivor. */
+	Run = 2 UMETA(DisplayName = "Run"),
+
+	/** * Vertical traversal state. 
+	 * @note Transition to this state should be triggered by the CharacterMovementComponent's 'IsFalling' check.
+	 */
+	Jump = 3 UMETA(DisplayName = "Jump"),
+
+	/** * Maximum velocity locomotion. 
+	 * @note Often consumes stamina and restricts certain actions (like Firing) in the WeaponSystem.
+	 */
+	Sprint = 4 UMETA(DisplayName = "Sprint"),
+
+	/** * Specialized state for climbing or vaulting over obstacles. 
+	 * @note Typically utilizes Root Motion to ensure the mesh precisely follows the ledge geometry.
+	 */
+	Traversing = 5 UMETA(DisplayName = "Traversing")
 };
-
-
 
 /**
  * @brief Represents the current weapon-related state of the player.
@@ -116,8 +139,10 @@ class THESURVIVOR_API ASurvivorCharacter : public ACharacter
 	UInputAction* ReloadAction;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* NextWeapon;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* PreviousWeapon;
+	/**
+	 * used to keep the player aiming if he released the shoot (left mouse click) button
+	 */
+	bool bIsAimingInputActive;
 #pragma endregion
 #pragma region Effects
 	/** Sound to play when reloading. */
@@ -163,7 +188,4 @@ public:
 	/** @return The follow camera subObject. */
 	NODISCARD FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 #pragma endregion
-
-	UFUNCTION(BlueprintImplementableEvent)
-	void AttachWeapon(AWeapon* Weapon);
 };
