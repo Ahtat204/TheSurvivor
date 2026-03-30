@@ -45,6 +45,7 @@ void ASurvivorCharacter::BeginPlay()
 			Subsystem->AddMappingContext(MainMappginContext, 0);
 		}
 	}
+    
 }
 
 void ASurvivorCharacter::Reload(const FInputActionValue& Value)

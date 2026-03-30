@@ -42,6 +42,27 @@ TArray<AWeapon*>& UWeaponSystemComponent::AddWeapon(AWeapon* newWeapon)
 	Weapons.Add(newWeapon);
 	return Weapons;
 }
+void UWeaponSystemComponent::FireAction(EWeaponState WeaponState) const
+{
+	if (CurrentWeapon!=nullptr)
+	{
+		if (WeaponState==EWeaponState::Firing)
+		{
+			CurrentWeapon->FireBullet();
+		}
+	}
+}
+
+void UWeaponSystemComponent::ReloadAction(EWeaponState WeaponState)
+{
+	if ()
+}
+
+bool UWeaponSystemComponent::CanPerformAction() const
+{
+	return false;
+}
+
 TArray<AWeapon*> UWeaponSystemComponent::RemoveWeapon(int16 Index)
 {
 	if (Index >= Weapons.Num())
