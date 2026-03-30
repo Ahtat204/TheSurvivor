@@ -7,8 +7,6 @@
 // Sets default values for this component's properties
 UWeaponSystemComponent::UWeaponSystemComponent(const FObjectInitializer& FObjectInitializer)
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 }
 void UWeaponSystemComponent::BeginPlay()
@@ -53,9 +51,15 @@ void UWeaponSystemComponent::FireAction(EWeaponState WeaponState) const
 	}
 }
 
-void UWeaponSystemComponent::ReloadAction(EWeaponState WeaponState)
+void UWeaponSystemComponent::ReloadAction(EWeaponState WeaponState) const
 {
-	if ()
+	if (CurrentWeapon!=nullptr)
+	{
+		if (WeaponState==EWeaponState::Reloading)
+		{
+			
+		}
+	}
 }
 
 bool UWeaponSystemComponent::CanPerformAction() const

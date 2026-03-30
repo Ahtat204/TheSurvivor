@@ -72,11 +72,12 @@ public:
      * @param WeaponState The observed state from the character/controller.
      * @details Synchronizes weapon reload animations and ammo pool deductions.
      */
-    void ReloadAction(EWeaponState WeaponState);
+    void ReloadAction(EWeaponState WeaponState) const;
 
     /**
      * @brief Deterministic check to see if the system is ready for a new command.
      * @return True if the component is in an 'Idle' state and not currently locked by an animation or cooldown.
      */
     bool CanPerformAction() const;
+    void AttachWeapon(AWeapon* Weapon);
 };
