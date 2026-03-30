@@ -24,7 +24,7 @@ AWeapon* UWeaponSystemComponent::GetWeapon(const uint16 Index) const
 	}
 	return Weapons[Index];
 }
-const TArrayView<AWeapon*>& UWeaponSystemComponent::GetAllWeapons() 
+ TArrayView<AWeapon* const> UWeaponSystemComponent::GetAllWeapons() 
 {
 	return Weapons;
 }
