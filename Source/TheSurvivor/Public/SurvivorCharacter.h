@@ -51,7 +51,7 @@ enum class EWeaponState : uint8
 	Reloading UMETA(DisplayName = "Reloading"),
 	Aiming UMETA(DisplayName = "Aiming"),
 };
-/**
+/**@author Ahtat204
  * @class ASurvivorCharacter
  * @brief Main player character class for the  game.
  *
@@ -114,6 +114,10 @@ class THESURVIVOR_API ASurvivorCharacter : public ACharacter
 	/** Input action for reloading a weapon. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* ReloadAction;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* NextWeapon;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* PreviousWeapon;
 #pragma endregion
 #pragma region Effects
 	/** Sound to play when reloading. */
@@ -128,6 +132,7 @@ class THESURVIVOR_API ASurvivorCharacter : public ACharacter
 	/** Current weapon state of the player (e.g., Armed, Firing, Reloading). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerState", meta = (AllowPrivateAccess = "true"))
 	EWeaponState CurrentWeaponState;
+	/**  used to precisely indicate if the player is walking, jumping,sprinting,climbing*/
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerState", meta = (AllowPrivateAccess = "true"))
 	ECharacterState CharacterState;
 #pragma endregion
