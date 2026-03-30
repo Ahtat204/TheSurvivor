@@ -54,7 +54,7 @@ public:
 	/** * @brief Returns a non-owning, thread-safe view of the weapon list.
  * @note This is high-performance (no copy, no allocation).
  */
-	const TArrayView<AWeapon*>& GetAllWeapons();
+	TArrayView<AWeapon* const> GetAllWeapons();
 
 	/**
 	 * @brief Adds a new weapon actor to the character's inventory.
