@@ -2,42 +2,24 @@
 #include "CoreMinimal.h"
 #include "InputActionValue.h"
 #include "GameFramework/Character.h"
+#include "TheSurvivor/TheSurvivor.h"
 #include "SurvivorCharacter.generated.h"
-#define NODISCARD [[nodiscard]]
 
 
+class AWeapon;
+class UWeaponSystemComponent;
 class USoundCue;
 class UInputMappingContext;
 class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
 
-/**
- * @brief Represents the current weapon-related state of the player.
- *
- * This enum is used to track and manage the player's interaction with weapons. 
- * The default state is Unarmed (value = 0). It can be utilized both in C++ and Blueprints 
- * to control animations, gameplay logic, and weapon handling mechanics.
- *
- * States:
- * - Unarmed   : The player has no weapon equipped (default state).
- * - Armed     : The player has a weapon equipped but is not actively using it.
- * - Firing    : The player is currently firing the equipped weapon.
- * - Reloading : The player is reloading the equipped weapon.
- * - Aiming    : The player is aiming down sights or focusing aim with the weapon.
- */
-UENUM(BlueprintType, Category="Weapons", meta=(ToolTip="Represents the current weapon-related state of the player."))
-enum class EWeaponState : uint8
-{
-	Unarmed UMETA(DisplayName = "Unarmed"),
-	Armed UMETA(DisplayName = "Armed"),
-	Firing UMETA(DisplayName = "Firing"),
-	Reloading UMETA(DisplayName = "Reloading"),
-	Aiming UMETA(DisplayName = "Aiming"),
-};
-/**
+
+
+
+/**@author Ahtat204
  * @class ASurvivorCharacter
- * @brief Main player character class for the ShootTrainer game.
+ * @brief Main player character class for the  game.
  *
  * This class extends ACharacter to represent the player in a first-person
  * shooter training environment. It defines camera setup, input bindings,
@@ -64,13 +46,16 @@ class THESURVIVOR_API ASurvivorCharacter : public ACharacter
 	GENERATED_BODY()
 #pragma region Components
 	/** Camera boom for positioning the follow camera behind the player. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components, meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* CameraBoom;
 	/** Follow camera providing the player's first-person view. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
+	/** the Component responsible for Weapons functionalities ,such as storing weapons , showing player weapons , choosing weapon*/
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components, meta = (AllowPrivateAccess = "true"))
+	UWeaponSystemComponent* WeaponSystemComponent;
 #pragma endregion
-	#pragma region Inputs
+#pragma region Inputs
 	/** this the main mapping context that will be used tha majority of the time. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* MainMappginContext;
@@ -95,27 +80,25 @@ class THESURVIVOR_API ASurvivorCharacter : public ACharacter
 	/** Input action for reloading a weapon. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* ReloadAction;
-#pragma endregion
-#pragma region Effects
-	/** Sound to play when reloading. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Sounds", meta = (AllowPrivateAccess = "true"))
-	USoundCue* ReloadSound;
-	/** Animation montage to play when reloading. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UAnimMontage* ReloadAnimMontage;
-	/** Reference to the underlying APlayerState associated with this character. */
+	UInputAction* NextWeapon;
+	/**
+	 * used to keep the player aiming if he released the shoot (left mouse click) button
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly,Category = Input, meta = (AllowPrivateAccess = "true"))
+	bool bIsAimingInputActive;
 #pragma endregion
 #pragma region StateMachine
 	/** Current weapon state of the player (e.g., Armed, Firing, Reloading). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerState", meta = (AllowPrivateAccess = "true"))
 	EWeaponState CurrentWeaponState;
+	/**  used to precisely indicate if the player is walking, jumping,sprinting,climbing*/
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerState", meta = (AllowPrivateAccess = "true"))
+	ECharacterState CharacterState;
 #pragma endregion
 public:
-	// Sets default values for this character's properties
 	explicit ASurvivorCharacter(const FObjectInitializer& ObjectInitialize);
-
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 #pragma region InputsFunctions
 	/** Handles reloading input. */
@@ -124,6 +107,7 @@ protected:
 	void Shoot(const FInputActionValue& Value);
 	/** Handles aiming input. */
 	void Aim(const FInputActionValue& Value);
+	/** handles Movements inputs */
 	void Move(const FInputActionValue& Value);
 	/** Handles looking input (camera rotation). */
 	void Look(const FInputActionValue& Value);
@@ -131,14 +115,12 @@ protected:
 #pragma endregion
 
 public:
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
 #pragma region Getters&setters
 	/** @return The camera boom subObject. */
 	NODISCARD FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** @return The follow camera subObject. */
 	NODISCARD FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 #pragma endregion
-
-	// Called to bind functionality to input
 };
