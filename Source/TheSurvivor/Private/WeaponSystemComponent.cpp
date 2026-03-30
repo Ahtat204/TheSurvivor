@@ -2,7 +2,7 @@
 #include<Weapon.h>
 #include <SurvivorCharacter.h>
 
-
+//TODO:use Animation Layer Interface to make Animation blueprint flexible for each weapon type 
 UWeaponSystemComponent::UWeaponSystemComponent(const FObjectInitializer& FObjectInitializer)
 {
 	PrimaryComponentTick.bCanEverTick = true;
