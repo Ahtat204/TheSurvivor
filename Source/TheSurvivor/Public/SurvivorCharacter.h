@@ -87,15 +87,6 @@ class THESURVIVOR_API ASurvivorCharacter : public ACharacter
 	 */
 	bool bIsAimingInputActive;
 #pragma endregion
-#pragma region Effects
-	/** Sound to play when reloading. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Sounds", meta = (AllowPrivateAccess = "true"))
-	USoundCue* ReloadSound;
-	/** Animation montage to play when reloading. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UAnimMontage* ReloadAnimMontage;
-	/** Reference to the underlying APlayerState associated with this character. */
-#pragma endregion
 #pragma region StateMachine
 	/** Current weapon state of the player (e.g., Armed, Firing, Reloading). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerState", meta = (AllowPrivateAccess = "true"))
