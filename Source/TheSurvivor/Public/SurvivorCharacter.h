@@ -86,7 +86,7 @@ class THESURVIVOR_API ASurvivorCharacter : public ACharacter
 	 * used to keep the player aiming if he released the shoot (left mouse click) button
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly,Category = Input, meta = (AllowPrivateAccess = "true"))
-	bool bIsAimingInputActive;
+	uint8 bIsAimingInputActive:1;
 #pragma endregion
 #pragma region StateMachine
 	/** Current weapon state of the player (e.g., Armed, Firing, Reloading). */
