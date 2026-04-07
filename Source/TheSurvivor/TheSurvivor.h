@@ -12,8 +12,17 @@
  * * This enum serves as the primary driver for the Animation Blueprint (AnimBP) state machine.
  * It distinguishes between grounded locomotion, airborne states, and specialized 
  * traversal actions (Climbing, Sprinting).
+ * this enum is used in animations Layers to get exactly the state of the player and play the correct animation ,especially when holding a weapon
+ * States:
+ * - Idle:The player is standing , maybe holding a weapon maybe not
+ * - Walk:the Player is Walking ,again ,maybe holding a weapon maybe not
+ * - Run:the Player is running #############################
+ * - Jump: indicates the Player is jumping (this is a bit hard to detect since this state comes form the Base ACharacter clss)
+ * - Spring:
+ * - Traversing :used to implement climbing
+ * 
  */
-UENUM(BlueprintType)
+UENUM(BlueprintType,Flags)
 enum class ECharacterState : uint8
 {
 	/** Standing still or minimal movement; typical baseline state. */
@@ -33,12 +42,12 @@ enum class ECharacterState : uint8
 	/** * Maximum velocity locomotion. 
 	 * @note Often consumes stamina and restricts certain actions (like Firing) in the WeaponSystem.
 	 */
-	Sprint = 4 UMETA(DisplayName = "Sprint"),
+	Sprint = 4 UMETA(DisplayName = "Sprint",Tooltip="Maximum velocity locomotion."),
 
 	/** * Specialized state for climbing or vaulting over obstacles. 
 	 * @note Typically utilizes Root Motion to ensure the mesh precisely follows the ledge geometry.
 	 */
-	Traversing = 5 UMETA(DisplayName = "Traversing")
+	Traversing = 5 UMETA(DisplayName = "Traversing",Tooltip = " Specialized state for climbing or vaulting over obstacles. ")
 };
 
 /**
@@ -61,7 +70,7 @@ enum class EWeaponState : uint8
 	/**
 	 * Indicate that the  character doesn't hold any weapon , it has nothing to do with the player running or walking or Idle state 
 	 */
-	Unarmed UMETA(DisplayName = "Unarmed"),
+	Unarmed UMETA(DisplayName = "Unarmed",Tooltip = "Indicate that the  character doesn't hold any weapon , it has nothing to do with the player running or walking or Idle state "),
 	Armed UMETA(DisplayName = "Armed"),
 	Firing UMETA(DisplayName = "Firing"),
 	Reloading UMETA(DisplayName = "Reloading"),

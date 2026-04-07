@@ -43,7 +43,7 @@ void ASurvivorCharacter::BeginPlay()
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<
 			UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
-			Subsystem->AddMappingContext(MainMappginContext, 0);
+			Subsystem->AddMappingContext(MainMappingContext, 0);
 		}
 	}
     
@@ -120,6 +120,11 @@ void ASurvivorCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void ASurvivorCharacter::Interact(const FInputActionValue& Value)
+{
+	
 }
 
 void ASurvivorCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

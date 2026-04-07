@@ -67,8 +67,7 @@ public:
 	UAnimMontage* ReloadAnimMontage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Sounds", meta = (AllowPrivateAccess = "true"))
 	USoundCue* ReloadSound;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Enumerations")
-	EWeaponType WeaponType;
+	
 	/** Skeletal mesh for the weapon (e.g., pistol mesh). */
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
 	TObjectPtr<USkeletalMeshComponent> SkeletalMeshComponent;
@@ -94,6 +93,8 @@ public:
 	/** Niagara component for visual gunfire effect (e.g., muzzle flash). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Components")
 	UNiagaraComponent* NiagraComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Enumerations",meta = (ShortTooltip="the Type of the weapon"))
+	EWeaponType WeaponType;
 #pragma endregion
 };
 

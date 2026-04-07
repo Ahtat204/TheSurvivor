@@ -58,7 +58,7 @@ class THESURVIVOR_API ASurvivorCharacter : public ACharacter
 #pragma region Inputs
 	/** this the main mapping context that will be used tha majority of the time. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputMappingContext* MainMappginContext;
+	UInputMappingContext* MainMappingContext;
 	/** Input action for jumping. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* JumpAction;
@@ -70,7 +70,7 @@ class THESURVIVOR_API ASurvivorCharacter : public ACharacter
 	UInputAction* LookAction;
 	/** Input action for interacting with objects (e.g., picking up weapons). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* Interact;
+	UInputAction* InteractAction;
 	/** Input action for aiming with a weapon. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* AimAction;
@@ -111,6 +111,7 @@ protected:
 	void Move(const FInputActionValue& Value);
 	/** Handles looking input (camera rotation). */
 	void Look(const FInputActionValue& Value);
+	void Interact(const FInputActionValue& Value);
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 #pragma endregion
 
