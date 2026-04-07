@@ -83,18 +83,14 @@ class THESURVIVOR_API ASurvivorCharacter : public ACharacter
 	/** Input Action for arming the player with a weapon , whether pick up or from weapon arsenal  */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* NextWeapon;
+#pragma region StateMachine
+	EPlayerCharacterState CharacterState ;
+#pragma endregion
 	/** used to keep the player aiming if he released the shoot (left mouse click) button*/
 	UPROPERTY(EditAnywhere, BlueprintReadOnly,Category = Input, meta = (AllowPrivateAccess = "true"))
 	uint8 bIsAimingInputActive:1;
 #pragma endregion
-#pragma region StateMachine
-	/** Current weapon state of the player (e.g., Armed, Firing, Reloading). */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerState", meta = (AllowPrivateAccess = "true"))
-	EWeaponState CurrentWeaponState;
-	/**  used to precisely indicate if the player is walking, jumping,sprinting,climbing*/
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerState", meta = (AllowPrivateAccess = "true"))
-	ECharacterState CharacterState;
-#pragma endregion
+
 public:
 	explicit ASurvivorCharacter(const FObjectInitializer& ObjectInitialize);
 protected:
@@ -110,7 +106,8 @@ protected:
 	void Move(const FInputActionValue& Value);
 	/** Handles looking input (camera rotation). */
 	void Look(const FInputActionValue& Value);
-	void Interact(const FInputActionValue& Value);
+	/** @note this function is just the first idea of implementing interaction , maybe will be moved to a dedicated Component */
+	MAYBEUNUSED void Interact(const FInputActionValue& Value);
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 #pragma endregion
 
