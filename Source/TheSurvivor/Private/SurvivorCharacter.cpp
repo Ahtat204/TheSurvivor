@@ -37,7 +37,7 @@ ASurvivorCharacter::ASurvivorCharacter(const FObjectInitializer& ObjectInitializ
 void ASurvivorCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	CharacterState=ECharacterState::Idle;
 	if (auto const PlayerController = Cast<APlayerController>(Controller))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<
@@ -99,7 +99,8 @@ void ASurvivorCharacter::Aim(const FInputActionValue& Value)
 
 void ASurvivorCharacter::Move(const FInputActionValue& Value)
 {
-	const FVector2D MovementVector = Value.Get<FVector2D>();
+	const auto MovementVector = Value.Get<FVector2D>();
+	if (MovementVector.Length()==0) CharacterState=ECharacterState::Idle;
 	if (Controller != nullptr)
 	{
 		const auto Rotation = Controller->GetControlRotation();
