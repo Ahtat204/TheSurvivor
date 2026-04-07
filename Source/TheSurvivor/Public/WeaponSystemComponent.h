@@ -79,14 +79,14 @@ public:
 	 * @details This function acts as a reactor; if the state is 'Shooting', 
 	 * it validates cooldowns and ammo before instructing the CurrentWeapon to fire.
 	 */
-	void FireAction(_In_ EWeaponState WeaponState) const;
+	void FireAction(_In_ EPlayerCharacterState WeaponState) const;
 
 	/**
 	 * @brief Observes the current WeaponState to trigger reloading logic.
 	 * @param WeaponState The observed state from the character/controller.
 	 * @details Synchronizes weapon reload animations and ammo pool deductions.
 	 */
-	void ReloadAction(EWeaponState WeaponState) const;
+	void ReloadAction(EPlayerCharacterState WeaponState) const;
 
 	/**
 	 * @brief Deterministic check to see if the system is ready for a new command.

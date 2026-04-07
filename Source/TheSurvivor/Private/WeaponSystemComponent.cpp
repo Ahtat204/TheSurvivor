@@ -44,22 +44,22 @@ TArray<AWeapon*>& UWeaponSystemComponent::AddWeapon(AWeapon* newWeapon)
 	AttachWeapon(newWeapon);
 	return Weapons;
 }
-void UWeaponSystemComponent::FireAction(const EWeaponState WeaponState) const
+void UWeaponSystemComponent::FireAction(const EPlayerCharacterState WeaponState) const
 {
 	if (CurrentWeapon!=nullptr)
 	{
-		if (WeaponState==EWeaponState::Firing)
+		if (WeaponState==EPlayerCharacterState::Firing)
 		{
 			CurrentWeapon->FireBullet();
 		}
 	}
 }
 
-void UWeaponSystemComponent::ReloadAction(EWeaponState WeaponState) const
+void UWeaponSystemComponent::ReloadAction(EPlayerCharacterState WeaponState) const
 {
 	if (CurrentWeapon!=nullptr)
 	{
-		if (WeaponState==EWeaponState::Reloading)
+		if (WeaponState==EPlayerCharacterState::Reloading)
 		{
 			
 		}

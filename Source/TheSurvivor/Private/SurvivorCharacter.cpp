@@ -25,10 +25,10 @@ ASurvivorCharacter::ASurvivorCharacter(const FObjectInitializer& ObjectInitializ
 	bUseControllerRotationYaw = true;
 	bUseControllerRotationRoll = false;
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	WeaponSystemComponent=CreateDefaultSubobject<UWeaponSystemComponent>("WeaponSystemComponent");
+	WeaponSystemComponent = CreateDefaultSubobject<UWeaponSystemComponent>("WeaponSystemComponent");
 	CameraBoom->SetupAttachment(GetMesh(),TEXT("head"));
-	CameraBoom->TargetArmLength = 400.0f; 
-	CameraBoom->bUsePawnControlRotation = true; 
+	CameraBoom->TargetArmLength = 400.0f;
+	CameraBoom->bUsePawnControlRotation = true;
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
@@ -37,7 +37,7 @@ ASurvivorCharacter::ASurvivorCharacter(const FObjectInitializer& ObjectInitializ
 void ASurvivorCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	CharacterState=ECharacterState::Idle;
+	// TODO:replace  CharacterState = ECharacterState::Idle with EPlayerCharacterState::Idle;
 	if (auto const PlayerController = Cast<APlayerController>(Controller))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<
@@ -46,21 +46,20 @@ void ASurvivorCharacter::BeginPlay()
 			Subsystem->AddMappingContext(MainMappingContext, 0);
 		}
 	}
-    
 }
 
 void ASurvivorCharacter::Reload(const FInputActionValue& Value)
 {
-	const auto bIsReloading=Value.Get<bool>();
-	if (WeaponSystemComponent->CurrentWeapon->ReloadAnimMontage!=nullptr)
+	const auto bIsReloading = Value.Get<bool>();
+	if (WeaponSystemComponent->CurrentWeapon->ReloadAnimMontage != nullptr)
 	{
 		if (bIsReloading)
 		{
-			CurrentWeaponState=EWeaponState::Reloading;
+			CharacterState = EPlayerCharacterState::Reloading;
 			PlayAnimMontage(WeaponSystemComponent->CurrentWeapon->ReloadAnimMontage);
 		}
 	}
-	CurrentWeaponState=EWeaponState::Aiming;
+	CharacterState = EPlayerCharacterState::Aiming;
 }
 
 void ASurvivorCharacter::Tick(float DeltaTime)
@@ -72,35 +71,32 @@ void ASurvivorCharacter::Shoot(const FInputActionValue& Value)
 {
 	const bool bIsShooting = Value.Get<bool>();
 
-	if (bIsShooting && CurrentWeaponState == EWeaponState::Aiming)
+	if (bIsShooting && CharacterState == EPlayerCharacterState::Aiming)
 	{
-		CurrentWeaponState = EWeaponState::Firing;
-		WeaponSystemComponent->FireAction(CurrentWeaponState);
+		CharacterState = EPlayerCharacterState::Firing;
+		WeaponSystemComponent->FireAction(CharacterState);
 	}
-	else if (!bIsShooting && CurrentWeaponState == EWeaponState::Firing)
+	else if (!bIsShooting && CharacterState == EPlayerCharacterState::Firing)
 	{
-		/** * Here is the "Magic": We check the persistent boolean 
-		 * to see if the player is STILL holding Aim.
-		 */
-		CurrentWeaponState = bIsAimingInputActive ? EWeaponState::Aiming : EWeaponState::Armed;
-        
-		WeaponSystemComponent->FireAction(CurrentWeaponState);
+		CharacterState = bIsAimingInputActive ? EPlayerCharacterState::Aiming : EPlayerCharacterState::Armed;
+
+		WeaponSystemComponent->FireAction(CharacterState);
 	}
 }
 
 void ASurvivorCharacter::Aim(const FInputActionValue& Value)
 {
-	bIsAimingInputActive=Value.Get<bool>();
-	if (bIsAimingInputActive && CurrentWeaponState==EWeaponState::Armed)
+	bIsAimingInputActive = Value.Get<bool>();
+	if (bIsAimingInputActive && CharacterState == EPlayerCharacterState::Armed)
 	{
-		CurrentWeaponState=EWeaponState::Aiming;
+		CharacterState = EPlayerCharacterState::Aiming;
 	}
 }
 
 void ASurvivorCharacter::Move(const FInputActionValue& Value)
 {
 	const auto MovementVector = Value.Get<FVector2D>();
-	if (MovementVector.Length()==0) CharacterState=ECharacterState::Idle;
+	//	if (MovementVector.Length() == 0) CharacterState = ECharacterState::Idle;
 	if (Controller != nullptr)
 	{
 		const auto Rotation = Controller->GetControlRotation();
@@ -125,7 +121,6 @@ void ASurvivorCharacter::Look(const FInputActionValue& Value)
 
 void ASurvivorCharacter::Interact(const FInputActionValue& Value)
 {
-	
 }
 
 void ASurvivorCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -139,8 +134,6 @@ void ASurvivorCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Triggered, this, &ASurvivorCharacter::Aim);
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &ASurvivorCharacter::Aim);
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this, &ASurvivorCharacter::Shoot);
-		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Started, this,&ASurvivorCharacter::Reload);
-
+		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Started, this, &ASurvivorCharacter::Reload);
 	}
 }
-
