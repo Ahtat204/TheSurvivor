@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Weapon.h"
 #include "Components/ActorComponent.h"
 #include "TheSurvivor/TheSurvivor.h"
 #include "WeaponSystemComponent.generated.h"
@@ -15,7 +16,9 @@ class AWeapon;
  * It manages a collection of AWeapon actors and reacts to changes in the player's 
  * state to execute firing or reloading sequences.
  */
-UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent,
+	DisplayName="Weapon Component",
+	ToolTip="this component is like an ASP.NET or Spring service,it is delegated to manage the interaction with Weapons for more flexibility instead of just one Weapon in the Character "))
 class THESURVIVOR_API UWeaponSystemComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -49,7 +52,7 @@ public:
 	 * @note Uses NODISCARD to ensure the caller validates the returned pointer.
 	 */
 
-	_Ret_maybenull_ NODISCARD AWeapon* GetWeapon(_In_ uint16 Index) const;
+	_Ret_maybenull_ NODISCARD AWeapon* GetWeapon(_Const_ _In_ uint16 Index) const;
 
 	/** * @brief Returns a non-owning, thread-safe view of the weapon list.
  * @note This is high-performance (no copy, no allocation).
@@ -89,5 +92,5 @@ public:
 	 * @brief Deterministic check to see if the system is ready for a new command.
 	 * @return True if the component is in an 'Idle' state and not currently locked by an animation or cooldown.
 	 */
-	void AttachWeapon();
+	void AttachWeapon(AWeapon* pickUpWeapon ) ;
 };

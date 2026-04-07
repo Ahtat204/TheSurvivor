@@ -80,11 +80,10 @@ class THESURVIVOR_API ASurvivorCharacter : public ACharacter
 	/** Input action for reloading a weapon. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* ReloadAction;
+	/** Input Action for arming the player with a weapon , whether pick up or from weapon arsenal  */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* NextWeapon;
-	/**
-	 * used to keep the player aiming if he released the shoot (left mouse click) button
-	 */
+	/** used to keep the player aiming if he released the shoot (left mouse click) button*/
 	UPROPERTY(EditAnywhere, BlueprintReadOnly,Category = Input, meta = (AllowPrivateAccess = "true"))
 	uint8 bIsAimingInputActive:1;
 #pragma endregion

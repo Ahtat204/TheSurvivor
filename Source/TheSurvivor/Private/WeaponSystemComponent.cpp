@@ -1,6 +1,9 @@
 #include"WeaponSystemComponent.h"
 #include<Weapon.h>
+#include "Kismet/GameplayStatics.h"
 #include <SurvivorCharacter.h>
+
+#include "MovieSceneTracksComponentTypes.h"
 
 //TODO:use Animation Layer Interface to make Animation blueprint flexible for each weapon type 
 UWeaponSystemComponent::UWeaponSystemComponent(const FObjectInitializer& FObjectInitializer)
@@ -30,6 +33,7 @@ AWeapon* UWeaponSystemComponent::GetWeapon(const uint16 Index) const
 }
 TArray<AWeapon*>& UWeaponSystemComponent::AddWeapon(AWeapon* newWeapon)
 {
+	UE_LOG(LogTemp, Warning, TEXT("AddWeapon is Fired,not from work but I mean it's on the stack frame"));
 	if (newWeapon==nullptr){return Weapons;}
 	if (Weapons.Num() >= 10)
 	{
@@ -37,6 +41,7 @@ TArray<AWeapon*>& UWeaponSystemComponent::AddWeapon(AWeapon* newWeapon)
 		return Weapons;
 	}
 	Weapons.Add(newWeapon);
+	AttachWeapon(newWeapon);
 	return Weapons;
 }
 void UWeaponSystemComponent::FireAction(const EWeaponState WeaponState) const
@@ -62,13 +67,27 @@ void UWeaponSystemComponent::ReloadAction(EWeaponState WeaponState) const
 }
 
 
-void UWeaponSystemComponent::AttachWeapon()
+void UWeaponSystemComponent::AttachWeapon( AWeapon* pickUpWeapon) 
 {
+	UE_LOG(LogTemp, Warning, TEXT("AttachWeapon is Fired,not from work but I mean it's on the stack frame"));
+	if (Owner==nullptr) return;
+	auto SkeletonMeshComponent=Owner->GetMesh();
+	if (pickUpWeapon==nullptr) return;
+	auto weaponType=pickUpWeapon->WeaponType;
+	if (weaponType==EWeaponType::Rifle)
+	{
+		if (CurrentWeapon==nullptr)
+		{
+			this->CurrentWeapon=pickUpWeapon;
+		}
+		CurrentWeapon->AttachToComponent(SkeletonMeshComponent,  FAttachmentTransformRules::KeepWorldTransform,TEXT("AR4XSocket"));
+	}
 	
 }
 
 TArray<AWeapon*> UWeaponSystemComponent::RemoveWeapon(int16 Index)
 {
+	
 	if (Index >= Weapons.Num())
 	{
 		return Weapons;
