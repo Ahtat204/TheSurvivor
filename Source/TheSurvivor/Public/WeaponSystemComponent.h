@@ -89,6 +89,5 @@ public:
 	 * @brief Deterministic check to see if the system is ready for a new command.
 	 * @return True if the component is in an 'Idle' state and not currently locked by an animation or cooldown.
 	 */
-	bool CanPerformAction() const;
 	void AttachWeapon();
 };
