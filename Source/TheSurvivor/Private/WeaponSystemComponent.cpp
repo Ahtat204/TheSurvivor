@@ -31,13 +31,13 @@ AWeapon* UWeaponSystemComponent::GetWeapon(const uint16 Index) const
 {
 	return Weapons;
 }
-TArray<AWeapon*>& UWeaponSystemComponent::AddWeapon(AWeapon* newWeapon)
+TArrayView<AWeapon* const> UWeaponSystemComponent::AddWeapon(AWeapon* newWeapon)
 {
-	UE_LOG(LogTemp, Warning, TEXT("AddWeapon is Fired,not from work but I mean it's on the stack frame"));
+	UE_LOG(LogTemp, Warning, TEXT("AddWeapon is Fired"));
 	if (newWeapon==nullptr){return Weapons;}
-	if (Weapons.Num() >= 10)
+	if (Weapons.Num() < 10)
 	{
-		Weapons[10]=newWeapon;
+		Weapons.Add(newWeapon);
 		return Weapons;
 	}
 	Weapons.Add(newWeapon);
@@ -85,7 +85,7 @@ void UWeaponSystemComponent::AttachWeapon( AWeapon* pickUpWeapon)
 	
 }
 
-TArray<AWeapon*> UWeaponSystemComponent::RemoveWeapon(int16 Index)
+TArrayView<AWeapon* const> UWeaponSystemComponent::RemoveWeapon(int16 Index)
 {
 	
 	if (Index >= Weapons.Num())
