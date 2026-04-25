@@ -107,7 +107,7 @@ protected:
 	/** Handles looking input (camera rotation). */
 	void Look(const FInputActionValue& Value);
 	/** @note this function is just the first idea of implementing interaction , maybe will be moved to a dedicated Component */
-	MAYBEUNUSED void Interact(const FInputActionValue& Value);
+	MAYBE_UNUSED void Interact(const FInputActionValue& Value);
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 #pragma endregion
 
