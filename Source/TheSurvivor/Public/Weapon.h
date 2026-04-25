@@ -135,7 +135,7 @@ private:
 	/** Capsule collider for hit detection and overlaps. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Components", meta = (AllowPrivateAccess = "true"))
 	UCapsuleComponent* CapsuleComponent;
-	MAYBEUNUSED FString WeaponName;
+	MAYBE_UNUSED FString WeaponName;
 public:
 	NODISCARD FString GetWeaponName() const{return WeaponName;}
 	void SetWeaponName(const FString& Name){this->WeaponName = Name;}
