@@ -18,7 +18,9 @@ class AWeapon;
  */
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent,
 	DisplayName="Weapon Component",
-	ToolTip="this component is like an ASP.NET or Spring service,it is delegated to manage the interaction with Weapons for more flexibility instead of just one Weapon in the Character "))
+	ToolTip=
+	"this component is like an ASP.NET or Spring service,it is delegated to manage the interaction with Weapons for more flexibility instead of just one Weapon in the Character "
+))
 class THESURVIVOR_API UWeaponSystemComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -54,8 +56,8 @@ public:
 
 	_Ret_maybenull_ NODISCARD AWeapon* GetWeapon(_Const_ _In_ uint16 Index) const;
 
-	/** * @brief Returns a non-owning, thread-safe view of the weapon list.
- * @note This is high-performance (no copy, no allocation).
+	/**  @brief Returns a non-owning, thread-safe view of the weapon list.
+    @note This is high-performance (no copy, no allocation).
  */
 	inline TArrayView<AWeapon* const> GetAllWeapons();
 
@@ -92,5 +94,5 @@ public:
 	 * @brief Deterministic check to see if the system is ready for a new command.
 	 * @return True if the component is in an 'Idle' state and not currently locked by an animation or cooldown.
 	 */
-	void AttachWeapon(AWeapon* pickUpWeapon ) ;
+	void AttachWeapon(AWeapon* pickUpWeapon);
 };

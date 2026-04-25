@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #define NODISCARD [[nodiscard]]
-#define MAYBEUNUSED [[maybe_unused]]
-
+#define MAYBE_UNUSED [[maybe_unused]]
+#define LOCOMOTION_MASK (static_cast<uint8>(0x0F))
 /**
  * @enum EWeaponType
  * @brief represents the type/size of the weapon ,used in animation to choose the proper animation for the weapon
@@ -42,46 +42,28 @@ enum class EWeaponType:uint8
  * - Aiming    : The player is aiming down sights or focusing aim with the weapon.
  * - Traversing :used to implement climbing
  * @attention I moved to this merged enum to perform bitwise operators and to solve the extra  13 bytes padding from the @code ASurvivorCharacter.CharacterState.
+ * @remark there's no Unarmed since we just check if Armed&Idle is false
  */
 UENUM(BlueprintType, Category="Weapons",
 	meta=(Bitflags, UseEnumValuesAsMaskValuesInEditor = "true", ToolTip=
 		"Represents the current weapon-related state of the player."))
 enum class EPlayerCharacterState : uint8
 {
-	/** Standing still or minimal movement; typical baseline state. */
-	Idle = 0 UMETA(DisplayName = "Idle"),
+	// --- ZONE 1: LOCOMOTION (Exclusive States: 0-7) ---
+	// These use standard integers. Only one can be active at a time.
+	Idle        = 0,   // 0000 0000
+	Walk        = 1,   // 0000 0001
+	Run         = 2,   // 0000 0010
+	Jump        = 3,   // 0000 0011
+	Traversing  = 4,   // 0000 0100
 
-	/** Standard intentional movement, usually blended with Idle in a 1D/2D BlendSpace. */
-	Walk = 1 << 0 UMETA(DisplayName = "Walk"),
-
-	/** High-speed locomotion; typically the default 'forward' move state for the survivor. */
-	Run = 2 UMETA(DisplayName = "Run"),
-
-	/** * Vertical traversal state. 
-	 * @note Transition to this state should be triggered by the CharacterMovementComponent's 'IsFalling' check.
-	 */
-	Jump = 3 UMETA(DisplayName = "Jump"),
-	
-	Armed UMETA(DisplayName = "Armed"),
-		Firing UMETA(DisplayName = "Firing"),
-		Reloading UMETA(DisplayName = "Reloading"),
-		Aiming UMETA(DisplayName = "Aiming"),
-	/** * Maximum velocity locomotion. 
-	 * @note Often consumes stamina and restricts certain actions (like Firing) in the WeaponSystem.
-	 */
-	Sprint = 4 UMETA(DisplayName = "Sprint", Tooltip="Maximum velocity locomotion."),
-
-	/** * Specialized state for climbing or vaulting over obstacles. 
-	 * @note Typically utilizes Root Motion to ensure the mesh precisely follows the ledge geometry.
-	 */
-	Traversing = 5 UMETA(DisplayName = "Traversing",
-	                     Tooltip = " Specialized state for climbing or vaulting over obstacles. "),
-	/**
- * Indicate that the  character doesn't hold any weapon , it has nothing to do with the player running or walking or Idle state 
- */
-	Unarmed UMETA(DisplayName = "Unarmed",
-	              Tooltip =
-	              "Indicate that the  character doesn't hold any weapon , it has nothing to do with the player running or walking or Idle state "),
+	// --- ZONE 2: ACTION FLAGS (Additive: Bits 4-7) ---
+	// We start at 1<<4 to avoid touching the Locomotion bits.
+	Armed       = 1 << 4, // 0001 0000 (16)
+	Firing      = 1 << 5, // 0010 0000 (32)
+	Reloading   = 1 << 6, // 0100 0000 (64)
+	Aiming      = 1 << 7, // 1000 0000 (128)
 };
+
 //ENUM_CLASS_FLAGS to enable bitwise operators (| , & , ^) for this enum
 ENUM_CLASS_FLAGS(EPlayerCharacterState)
