@@ -13,10 +13,6 @@ class UInputMappingContext;
 class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
-
-
-
-
 /**@author Ahtat204
  * @class ASurvivorCharacter
  * @brief Main player character class for the  game.
@@ -83,12 +79,15 @@ class THESURVIVOR_API ASurvivorCharacter : public ACharacter
 	/** Input Action for arming the player with a weapon , whether pick up or from weapon arsenal  */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* NextWeapon;
-#pragma region StateMachine
-	EPlayerCharacterState CharacterState ;
-#pragma endregion
 	/** used to keep the player aiming if he released the shoot (left mouse click) button*/
 	UPROPERTY(EditAnywhere, BlueprintReadOnly,Category = Input, meta = (AllowPrivateAccess = "true"))
 	uint8 bIsAimingInputActive:1;
+#pragma endregion
+#pragma region StateMachine 
+#pragma message(__FILE__ ": there's a 14 byte wasted memory padding in this variable")
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly,Category = Input, meta = (AllowPrivateAccess = "true"))
+	EPlayerCharacterState CharacterState ;
 #pragma endregion
 
 public:
@@ -121,3 +120,6 @@ public:
 	NODISCARD FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 #pragma endregion
 };
+
+
+

@@ -55,8 +55,6 @@ enum class EPlayerCharacterState : uint8
 	Walk        = 1,   // 0000 0001
 	Run         = 2,   // 0000 0010
 	Jump        = 3,   // 0000 0011
-	Traversing  = 4,   // 0000 0100
-
 	// --- ZONE 2: ACTION FLAGS (Additive: Bits 4-7) ---
 	// We start at 1<<4 to avoid touching the Locomotion bits.
 	Armed       = 1 << 4, // 0001 0000 (16)
