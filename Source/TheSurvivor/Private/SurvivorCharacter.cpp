@@ -50,17 +50,27 @@ void ASurvivorCharacter::BeginPlay()
 
 void ASurvivorCharacter::Reload(const FInputActionValue& Value)
 {
-	const auto bIsReloading = Value.Get<bool>();
+	const bool bIsReloading = Value.Get<bool>();
+	uint8 current = static_cast<uint8>(CharacterState) &
+		(static_cast<uint8>(EPlayerCharacterState::Aiming) |
+		 static_cast<uint8>(EPlayerCharacterState::Armed) |
+		 static_cast<uint8>(EPlayerCharacterState::Firing));
+	if (current == 0) return;
+
 	if (WeaponSystemComponent->CurrentWeapon->ReloadAnimMontage != nullptr)
 	{
 		if (bIsReloading)
 		{
-			CharacterState = EPlayerCharacterState::Reloading;
+			CharacterState |= EPlayerCharacterState::Reloading;
 			PlayAnimMontage(WeaponSystemComponent->CurrentWeapon->ReloadAnimMontage);
 		}
+		else
+		{
+			CharacterState &= ~EPlayerCharacterState::Reloading;
+		}
 	}
-	CharacterState = EPlayerCharacterState::Aiming;
 }
+
 
 void ASurvivorCharacter::Tick(float DeltaTime)
 {
@@ -72,10 +82,15 @@ void ASurvivorCharacter::Shoot(const FInputActionValue& Value)
 	const bool bIsShooting = Value.Get<bool>();
 	uint8 current = static_cast<uint8>(CharacterState) &
 		(static_cast<uint8>(EPlayerCharacterState::Aiming) | static_cast<uint8>(EPlayerCharacterState::Armed));
+	/*bitwise AND has higher precedence than OR , thus it's the correct way to check both is by isolating them, if we just did*
+	 * uint8 current=(uint8)CharacterState & (uint8)EPlayerCharacterState::Aiming | (uint8)EPlayerCharacterState::Armed;
+	 * the OR will never be checked since AND higher precedence that OR
+	 */
+
 	if (current == 0) return;
 	if (bIsShooting)
 	{
-		CharacterState |=EPlayerCharacterState::Firing; 
+		CharacterState |= EPlayerCharacterState::Firing;
 	}
 	if (!bIsShooting)
 	{
@@ -86,16 +101,23 @@ void ASurvivorCharacter::Shoot(const FInputActionValue& Value)
 void ASurvivorCharacter::Aim(const FInputActionValue& Value)
 {
 	const auto bIsAiming = Value.Get<bool>();
-	if (bIsAiming && CharacterState == EPlayerCharacterState::Armed)
+	uint8 current = static_cast<uint8>(CharacterState) & static_cast<uint8>(EPlayerCharacterState::Armed);
+	if (current == 0)return;
+	if (bIsAiming)
 	{
-		CharacterState = CharacterState & EPlayerCharacterState::Aiming;
+		CharacterState |= EPlayerCharacterState::Aiming;
+	}
+	if (!bIsAiming)
+	{
+		CharacterState &= ~EPlayerCharacterState::Aiming;
 	}
 }
 
 void ASurvivorCharacter::Move(const FInputActionValue& Value)
 {
 	const auto MovementVector = Value.Get<FVector2D>();
-	if (MovementVector.Length() == 0) CharacterState = EPlayerCharacterState::Idle;
+	if (MovementVector.Length() == 0) CharacterState |= EPlayerCharacterState::Idle;
+	if (MovementVector.Length() > 0) CharacterState &= ~EPlayerCharacterState::Idle;
 	if (Controller != nullptr)
 	{
 		const auto Rotation = Controller->GetControlRotation();
