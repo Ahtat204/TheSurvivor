@@ -42,9 +42,10 @@ enum class EWeaponType:uint8
  * - Firing    : The player is currently firing the equipped weapon.
  * - Reloading : The player is reloading the equipped weapon.
  * - Aiming    : The player is aiming down sights or focusing aim with the weapon.
- * - Traversing :used to implement climbing
- * @attention I moved to this merged enum to perform bitwise operators and to solve the extra  13 bytes padding from the @code ASurvivorCharacter.CharacterState.
- * @remark there's no Unarmed since we just check if Armed&Idle is false
+ * - Traversing :used to implement climbing.
+ * @attention - I moved to this merged enum to perform bitwise operators and to solve the extra  13 bytes padding from the  ASurvivorCharacter.CharacterState.
+ * @remark there's no Unarmed since we just check if Armed&Idle is false.
+ * @attention - Use assignment carefully because you might overwrite any existing bits ,assign only at the beginning of the game, use bitwise operators to add other states 
  */
 UENUM(BlueprintType, Category="Weapons",
 	meta=(Bitflags, UseEnumValuesAsMaskValuesInEditor = "true", ToolTip=
@@ -53,18 +54,27 @@ enum class EPlayerCharacterState : uint8
 {
 	// --- ZONE 1: LOCOMOTION (Exclusive States: 0-7) ---
 	// These use standard integers. Only one can be active at a time.
-	Idle        = 0,   // 0000 0000
-	Walk        = 1,   // 0000 0001
-	Run         = 2,   // 0000 0010
-	Jump        = 3,   // 0000 0011
+	Idle       = 0 UMETA(DisplayName="Idle",ToolTip="Indicates the Player isn't moving") ,   // 0000 0000 
+	Moving        = 1 UMETA(DisplayName="Walking or Running",ToolTip="Indicates the Player is not in an Idle State"),   // 0000 0001
+	Jump         = 2 UMETA(DisplayName="Jumping",ToolTip="Indicates the Player is Jumping"),   // 0000 0010
+	Crouch =3 UMETA(DisplayName="Crouching",ToolTip="Indicates the Player is Crouching"),
 	// --- ZONE 2: ACTION FLAGS (Additive: Bits 4-7) ---
 	// We start at 1<<4 to avoid touching the Locomotion bits.
-	Armed       = 1 << 4, // 0001 0000 (16)
-	Firing      = 1 << 5, // 0010 0000 (32)
-	Reloading   = 1 << 6, // 0100 0000 (64)
-	Aiming      = 1 << 7, // 1000 0000 (128)
+	Armed       = 1 << 4 UMETA(DisplayName="",ToolTip=""), // 0001 0000 (16)
+	Firing      = 1 << 5 UMETA(DisplayName="",ToolTip=""), // 0010 0000 (32)
+	Reloading   = 1 << 6 UMETA(DisplayName="",ToolTip=""), // 0100 0000 (64)
+	Aiming      = 1 << 7 UMETA(DisplayName="",ToolTip=""), // 1000 0000 (128)
 };
 //to remove a state (ex:making Player just unarmed while walking ) ,we just do Player.CharacterState &= ~EPlayerCharacterState::Armed;
+
+/**
+
+ * @param CharacterState 
+ */
+inline void Toggle(EPlayerCharacterState CharacterState)
+{
+	
+}
 
 //ENUM_CLASS_FLAGS to enable bitwise operators (| , & , ^) for this enum
 ENUM_CLASS_FLAGS(EPlayerCharacterState)

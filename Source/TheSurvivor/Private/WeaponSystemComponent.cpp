@@ -69,9 +69,9 @@ void UWeaponSystemComponent::ReloadAction(EPlayerCharacterState CharacterState) 
 
 void UWeaponSystemComponent::AttachWeapon( AWeapon* pickUpWeapon) 
 {
-	UE_LOG(LogTemp, Warning, TEXT("AttachWeapon is Fired,not from work but I mean it's on the stack frame"));
 	if (Owner==nullptr) return;
-	auto SkeletonMeshComponent=Owner->GetMesh();
+	auto SkeletonMeshComponent=Owner.Get()->GetMesh();
+	if (!IsValid(SkeletonMeshComponent)) return;
 	if (pickUpWeapon==nullptr) return;
 	auto weaponType=pickUpWeapon->WeaponType;
 	if (weaponType==EWeaponType::Rifle)
