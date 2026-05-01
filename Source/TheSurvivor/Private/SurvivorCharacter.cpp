@@ -70,22 +70,32 @@ void ASurvivorCharacter::Tick(float DeltaTime)
 void ASurvivorCharacter::Shoot(const FInputActionValue& Value)
 {
 	const bool bIsShooting = Value.Get<bool>();
-
+	uint8 current = static_cast<uint8>(CharacterState) &
+		(static_cast<uint8>(EPlayerCharacterState::Aiming) | static_cast<uint8>(EPlayerCharacterState::Armed));
+	if (current == 0) return;
+	if (bIsShooting)
+	{
+		CharacterState |=EPlayerCharacterState::Firing; 
+	}
+	if (!bIsShooting)
+	{
+		CharacterState &= ~EPlayerCharacterState::Firing;
+	}
 }
 
 void ASurvivorCharacter::Aim(const FInputActionValue& Value)
 {
 	const auto bIsAiming = Value.Get<bool>();
-	if ( bIsAiming && CharacterState == EPlayerCharacterState::Armed)
+	if (bIsAiming && CharacterState == EPlayerCharacterState::Armed)
 	{
-		CharacterState = EPlayerCharacterState::Aiming;
+		CharacterState = CharacterState & EPlayerCharacterState::Aiming;
 	}
 }
 
 void ASurvivorCharacter::Move(const FInputActionValue& Value)
 {
 	const auto MovementVector = Value.Get<FVector2D>();
-	//	if (MovementVector.Length() == 0) CharacterState = ECharacterState::Idle;
+	if (MovementVector.Length() == 0) CharacterState = EPlayerCharacterState::Idle;
 	if (Controller != nullptr)
 	{
 		const auto Rotation = Controller->GetControlRotation();
