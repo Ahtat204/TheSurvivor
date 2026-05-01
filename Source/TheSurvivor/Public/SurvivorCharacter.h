@@ -79,12 +79,10 @@ class THESURVIVOR_API ASurvivorCharacter : public ACharacter
 	/** Input Action for arming the player with a weapon , whether pick up or from weapon arsenal  */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* NextWeapon;
-	/** used to keep the player aiming if he released the shoot (left mouse click) button*/
-	UPROPERTY(EditAnywhere, BlueprintReadOnly,Category = Input, meta = (AllowPrivateAccess = "true"))
-	uint8 bIsAimingInputActive:1;
+
 #pragma endregion
 #pragma region StateMachine 
-#pragma message(__FILE__ ": there's a 14 byte wasted memory padding in this variable")
+#pragma message(__FILE__ ": there's a 15 byte wasted memory padding in this variable")
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly,Category = Input, meta = (AllowPrivateAccess = "true"))
 	EPlayerCharacterState CharacterState ;

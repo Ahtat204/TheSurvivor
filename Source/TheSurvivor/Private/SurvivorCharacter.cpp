@@ -71,23 +71,12 @@ void ASurvivorCharacter::Shoot(const FInputActionValue& Value)
 {
 	const bool bIsShooting = Value.Get<bool>();
 
-	if (bIsShooting && CharacterState == EPlayerCharacterState::Aiming)
-	{
-		CharacterState = EPlayerCharacterState::Firing;
-		WeaponSystemComponent->FireAction(CharacterState);
-	}
-	else if (!bIsShooting && CharacterState == EPlayerCharacterState::Firing)
-	{
-		CharacterState = bIsAimingInputActive ? EPlayerCharacterState::Aiming : EPlayerCharacterState::Armed;
-
-		WeaponSystemComponent->FireAction(CharacterState);
-	}
 }
 
 void ASurvivorCharacter::Aim(const FInputActionValue& Value)
 {
-	bIsAimingInputActive = Value.Get<bool>();
-	if (bIsAimingInputActive && CharacterState == EPlayerCharacterState::Armed)
+	const auto bIsAiming = Value.Get<bool>();
+	if ( bIsAiming && CharacterState == EPlayerCharacterState::Armed)
 	{
 		CharacterState = EPlayerCharacterState::Aiming;
 	}
