@@ -46,29 +46,42 @@ void ASurvivorCharacter::BeginPlay()
 			Subsystem->AddMappingContext(MainMappingContext, 0);
 		}
 	}
+	checkf(JumpAction, TEXT("JumpAction is null — assign in the editor"));
+	checkf(MoveAction, TEXT("MoveAction is null — assign in the editor"));
+	checkf(ReloadAction, TEXT("ReloadAction is null — assign in the editor"));
+	checkf(LookAction, TEXT("LookAction is null — assign in the editor"));
+	checkf(AimAction, TEXT("AimAction is null — assign in the editor"));
+	checkf(NextWeapon, TEXT("NextWeapon InputAction Asset is not assigned"));
 }
 
 void ASurvivorCharacter::Reload(const FInputActionValue& Value)
 {
-	const bool bIsReloading = Value.Get<bool>();
-	uint8 current = static_cast<uint8>(CharacterState) &
-		(static_cast<uint8>(EPlayerCharacterState::Aiming) |
-		 static_cast<uint8>(EPlayerCharacterState::Armed) |
-		 static_cast<uint8>(EPlayerCharacterState::Firing));
-	if (current == 0) return;
-
-	if (WeaponSystemComponent->CurrentWeapon->ReloadAnimMontage != nullptr)
+	// Step 1: Input check (if)
+	if (!Value.Get<bool>()) return;
+    
+	// Step 2: Critical components (ensure)
+	if (!ensureMsgf(WeaponSystemComponent, TEXT("WeaponSystemComponent missing")))
 	{
-		if (bIsReloading)
-		{
-			CharacterState |= EPlayerCharacterState::Reloading;
-			PlayAnimMontage(WeaponSystemComponent->CurrentWeapon->ReloadAnimMontage);
-		}
-		else
-		{
-			CharacterState &= ~EPlayerCharacterState::Reloading;
-		}
+		return;  // Cannot recover
 	}
+	// Step 3: Critical asset (check in development, graceful in shipping)
+	auto ReloadMontage = WeaponSystemComponent->CurrentWeapon->ReloadAnimMontage;
+    
+#if UE_BUILD_SHIPPING
+	if (ReloadMontage == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Reload anim missing, reloading without animation"));
+		ReloadWeapon();
+		return;
+	}
+#else
+	checkf(ReloadMontage, TEXT("Reload animation not assigned for %s"), 
+		   *WeaponSystemComponent->CurrentWeapon->GetName());
+#endif
+    
+	// Safe to proceed
+	CharacterState |= EPlayerCharacterState::Reloading;
+	PlayAnimMontage(ReloadMontage);
 }
 
 
@@ -79,6 +92,10 @@ void ASurvivorCharacter::Tick(float DeltaTime)
 
 void ASurvivorCharacter::Shoot(const FInputActionValue& Value)
 {
+	if (!ensureMsgf(WeaponSystemComponent, TEXT("WeaponSystemComponent is null")))
+	{
+		return;
+	}
 	const bool bIsShooting = Value.Get<bool>();
 	uint8 current = static_cast<uint8>(CharacterState) &
 		(static_cast<uint8>(EPlayerCharacterState::Aiming) | static_cast<uint8>(EPlayerCharacterState::Armed));

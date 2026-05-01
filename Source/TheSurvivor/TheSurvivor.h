@@ -24,6 +24,8 @@ enum class EWeaponType:uint8
 };
 
 
+#define LOG(msg) UE_LOG(msg, __FILE__, __LINE__, __func__)
+
 /**@enum EPlayerCharacterState
  * @brief Defines the high-level traversal and locomotion state of the character.
  * This enum serves as the primary driver for the Animation Blueprint (AnimBP) state machine.
