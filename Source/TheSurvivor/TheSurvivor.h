@@ -62,6 +62,7 @@ enum class EPlayerCharacterState : uint8
 	Reloading   = 1 << 6, // 0100 0000 (64)
 	Aiming      = 1 << 7, // 1000 0000 (128)
 };
+//to remove a state (ex:making Player just unarmed while walking ) ,we just do Player.CharacterState &= ~EPlayerCharacterState::Armed;
 
 //ENUM_CLASS_FLAGS to enable bitwise operators (| , & , ^) for this enum
 ENUM_CLASS_FLAGS(EPlayerCharacterState)
