@@ -133,8 +133,16 @@ void ASurvivorCharacter::Aim(const FInputActionValue& Value)
 void ASurvivorCharacter::Move(const FInputActionValue& Value)
 {
 	const auto MovementVector = Value.Get<FVector2D>();
-	if (MovementVector.Length() == 0) CharacterState |= EPlayerCharacterState::Idle;
-	if (MovementVector.Length() > 0) CharacterState &= ~EPlayerCharacterState::Idle;
+	if (MovementVector.Length() == 0)
+	{
+		CharacterState |= EPlayerCharacterState::Idle; // switch Idle to On
+		CharacterState &= ~EPlayerCharacterState::Moving; //switch Moving to Off 
+	}
+	if (MovementVector.Length() > 0)
+	{
+		CharacterState &= ~EPlayerCharacterState::Idle; //switch Idle to off
+		CharacterState |= EPlayerCharacterState::Moving;//switch moving to on
+	}
 	if (Controller != nullptr)
 	{
 		const auto Rotation = Controller->GetControlRotation();
