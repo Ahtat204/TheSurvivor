@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #define NODISCARD [[nodiscard]]
 #define MAYBE_UNUSED [[maybe_unused]]
-#define LOCOMOTION_MASK (static_cast<uint8>(0x0F))
+#define LOCOMOTION_MASK (static_cast<uint8>(0x0F)) // means the movement states are in the lowest 4 bytes
 /**
  * @enum EWeaponType
  * @brief represents the type/size of the weapon ,used in animation to choose the proper animation for the weapon
