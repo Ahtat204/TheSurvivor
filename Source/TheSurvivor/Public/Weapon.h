@@ -13,7 +13,6 @@ class UCapsuleComponent;
 class UProjectileMovementComponent;
 
 
-
 /**
  * @class AWeapon
  * @brief Base class for all weapons in the  game.
@@ -62,12 +61,12 @@ public:
 	FORCEINLINE void ResetAmmo() { CurrentAmmo = MagazineSize; }
 #pragma endregion
 #pragma region Fields
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, meta = (AllowPrivateAccess = "true"))
 	UAnimMontage* ReloadAnimMontage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Sounds", meta = (AllowPrivateAccess = "true"))
 	USoundCue* ReloadSound;
-	
+
 	/** Skeletal mesh for the weapon (e.g., pistol mesh). */
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
 	TObjectPtr<USkeletalMeshComponent> SkeletalMeshComponent;
@@ -76,7 +75,8 @@ public:
 	TSubclassOf<ABullet> BulletClass;
 	/** Maximum number of bullets this weapon can hold in a magazine. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Ammunition",
-		meta = (ToolTip="Maximum number of bullets this weapon can hold in a magazine", AllowPrivateAccess = "true", ClampMax=100, ClampMin=1))
+		meta = (ToolTip="Maximum number of bullets this weapon can hold in a magazine", AllowPrivateAccess = "true",
+			ClampMax=100, ClampMin=1))
 	uint8 MagazineSize;
 	/** Current amount of ammunition remaining in the magazine. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Ammunition", meta = (AllowPrivateAccess = "true", ClampMin=1))
@@ -93,8 +93,16 @@ public:
 	/** Niagara component for visual gunfire effect (e.g., muzzle flash). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Components")
 	UNiagaraComponent* NiagraComponent;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Enumerations",meta = (ShortTooltip="the Type of the weapon"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Enumerations", meta = (ShortTooltip="the Type of the weapon"))
 	EWeaponType WeaponType;
+
+public:
+	/**
+ * this field specify the bone where the weapon should be attached
+ * @remark :this is a temporary solution , since it doesn't make sense a weapon choosing where to be attached
+ */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Components", meta = (AllowPrivateAccess = "true"))
+	FString Bone;
 #pragma endregion
 };
 
@@ -124,7 +132,11 @@ public:
 	/** Default constructor. */
 	explicit ABullet(const FObjectInitializer& FObjectInitializer);
 	/** @return The projectile movement component (controls flight physics). */
-	NODISCARD UProjectileMovementComponent* GetProjectileMovementComponent() const{return ProjectileMovementComponent;}
+	NODISCARD UProjectileMovementComponent* GetProjectileMovementComponent() const
+	{
+		return ProjectileMovementComponent;
+	}
+
 private:
 	/** Static mesh representing the bullet's visual appearance. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components", meta = (AllowPrivateAccess = "true"))
@@ -136,7 +148,8 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Components", meta = (AllowPrivateAccess = "true"))
 	UCapsuleComponent* CapsuleComponent;
 	MAYBE_UNUSED FString WeaponName;
+
 public:
-	NODISCARD FString GetWeaponName() const{return WeaponName;}
-	void SetWeaponName(const FString& Name){this->WeaponName = Name;}
+	NODISCARD FString GetWeaponName() const { return WeaponName; }
+	void SetWeaponName(const FString& Name) { this->WeaponName = Name; }
 };
