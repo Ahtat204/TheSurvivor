@@ -39,6 +39,10 @@ class UCameraComponent;
 UCLASS()
 class THESURVIVOR_API ASurvivorCharacter : public ACharacter
 {
+public:
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+
+private:
 	GENERATED_BODY()
 #pragma region Components
 	/** Camera boom for positioning the follow camera behind the player. */

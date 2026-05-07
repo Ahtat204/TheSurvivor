@@ -10,6 +10,16 @@
 #include "GameFramework/SpringArmComponent.h"
 
 
+void ASurvivorCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorBeginOverlap(OtherActor);
+	if (const auto gun=Cast<AWeapon>(OtherActor))
+	{
+		UE_LOG(LogTemp, Display, TEXT("Your log message here"));
+		WeaponSystemComponent->AddWeapon(gun);
+	}
+}
+
 ASurvivorCharacter::ASurvivorCharacter(const FObjectInitializer& ObjectInitialize)
 {
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
