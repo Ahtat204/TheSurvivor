@@ -72,7 +72,7 @@ void UWeaponSystemComponent::ReloadAction(EPlayerCharacterState CharacterState) 
 }
 
 
-void UWeaponSystemComponent::AttachWeapon( AWeapon* pickUpWeapon) 
+void UWeaponSystemComponent::AttachWeapon( AWeapon* pickUpWeapon) noexcept
 {
 	if (Owner==nullptr) return;
 	auto SkeletonMeshComponent=Owner.Get()->GetMesh();
@@ -84,8 +84,9 @@ void UWeaponSystemComponent::AttachWeapon( AWeapon* pickUpWeapon)
 		if (CurrentWeapon==nullptr)
 		{
 			this->CurrentWeapon=pickUpWeapon;
+			CurrentWeapon->AttachToComponent(SkeletonMeshComponent,  FAttachmentTransformRules::SnapToTargetNotIncludingScale,FName(*pickUpWeapon->Bone)); //FAttachmentTransformRules::SnapToTargetNotIncludingScale to match the socket’s position/rotation exactly.
 		}
-		CurrentWeapon->AttachToComponent(SkeletonMeshComponent,  FAttachmentTransformRules::KeepWorldTransform,FName(*pickUpWeapon->Bone));
+		
 	}
 	
 }

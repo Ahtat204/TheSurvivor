@@ -91,8 +91,7 @@ public:
 	void ReloadAction(EPlayerCharacterState WeaponState) const;
 
 	/**
-	 * @brief Deterministic check to see if the system is ready for a new command.
-	 * @return True if the component is in an 'Idle' state and not currently locked by an animation or cooldown.
+	 * @brief this method is used only as a wrapper on the Actor::AttachToComponent with additional validation checks(ex:nullptr checks)
 	 */
-	void AttachWeapon(AWeapon* pickUpWeapon);
+	void AttachWeapon(AWeapon* pickUpWeapon) noexcept;
 };
