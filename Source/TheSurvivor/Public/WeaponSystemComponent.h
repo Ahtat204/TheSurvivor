@@ -54,7 +54,7 @@ public:
 	 * @note Uses NODISCARD to ensure the caller validates the returned pointer.
 	 */
 
-	_Ret_maybenull_ NODISCARD AWeapon* GetWeapon(_Const_ _In_ uint16 Index) const;
+	_Ret_maybenull_ NODISCARD inline AWeapon* GetWeapon(_Const_ _In_ uint16 Index) const;
 
 	/**  @brief Returns a non-owning, thread-safe view of the weapon list.
     @note This is high-performance (no copy, no allocation).
@@ -81,14 +81,14 @@ public:
 	 * @details This function acts as a reactor; if the state is 'Shooting', 
 	 * it validates cooldowns and ammo before instructing the CurrentWeapon to fire.
 	 */
-	void FireAction(_In_ EPlayerCharacterState WeaponState) const;
+	void FireAction(_In_ const EPlayerCharacterState WeaponState) const;
 
 	/**
 	 * @brief Observes the current WeaponState to trigger reloading logic.
 	 * @param WeaponState The observed state from the character/controller.
 	 * @details Synchronizes weapon reload animations and ammo pool deductions.
 	 */
-	void ReloadAction(EPlayerCharacterState WeaponState) const;
+	void ReloadAction(_In_ EPlayerCharacterState WeaponState) const;
 
 	/**
 	 * @brief this method is used only as a wrapper on the Actor::AttachToComponent with additional validation checks(ex:nullptr checks)
