@@ -13,10 +13,15 @@
 void ASurvivorCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
-	if (const auto gun=Cast<AWeapon>(OtherActor))
+	if (const auto gun = Cast<AWeapon>(OtherActor))
 	{
 		UE_LOG(LogTemp, Display, TEXT("Your log message here"));
-		WeaponSystemComponent->AddWeapon(gun);
+		const auto weapons = WeaponSystemComponent->AddWeapon(gun);
+		if (weapons.IsEmpty()) return;
+		for (auto Weapon : weapons)
+		{
+			UE_LOG(LogTemp, Display, TEXT("weapons name is %s"), *Weapon->GetName())
+		}
 	}
 }
 
@@ -68,15 +73,15 @@ void ASurvivorCharacter::Reload(const FInputActionValue& Value)
 {
 	// Step 1: Input check (if)
 	if (!Value.Get<bool>()) return;
-    
+
 	// Step 2: Critical components (ensure)
 	if (!ensureMsgf(WeaponSystemComponent, TEXT("WeaponSystemComponent missing")))
 	{
-		return;  // Cannot recover
+		return; // Cannot recover
 	}
 	// Step 3: Critical asset (check in development, graceful in shipping)
 	auto ReloadMontage = WeaponSystemComponent->CurrentWeapon->ReloadAnimMontage;
-    
+
 #if UE_BUILD_SHIPPING
 	if (ReloadMontage == nullptr)
 	{
@@ -85,10 +90,10 @@ void ASurvivorCharacter::Reload(const FInputActionValue& Value)
 		return;
 	}
 #else
-	checkf(ReloadMontage, TEXT("Reload animation not assigned for %s"), 
-		   *WeaponSystemComponent->CurrentWeapon->GetName());
+	checkf(ReloadMontage, TEXT("Reload animation not assigned for %s"),
+	       *WeaponSystemComponent->CurrentWeapon->GetName());
 #endif
-    
+
 	// Safe to proceed
 	CharacterState |= EPlayerCharacterState::Reloading;
 	PlayAnimMontage(ReloadMontage);
@@ -151,7 +156,7 @@ void ASurvivorCharacter::Move(const FInputActionValue& Value)
 	if (MovementVector.Length() > 0)
 	{
 		CharacterState &= ~EPlayerCharacterState::Idle; //switch Idle to off
-		CharacterState |= EPlayerCharacterState::Moving;//switch moving to on
+		CharacterState |= EPlayerCharacterState::Moving; //switch moving to on
 	}
 	if (Controller != nullptr)
 	{

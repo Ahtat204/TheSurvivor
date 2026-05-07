@@ -27,22 +27,26 @@ AWeapon* UWeaponSystemComponent::GetWeapon(const uint16 Index) const
 	}
 	return Weapons[Index];
 }
- TArrayView<AWeapon* const> UWeaponSystemComponent::GetAllWeapons() 
+ TArrayView<AWeapon* const> UWeaponSystemComponent::GetAllWeapons() const
 {
 	return Weapons;
 }
 TArrayView<AWeapon* const> UWeaponSystemComponent::AddWeapon(AWeapon* newWeapon)
 {
 	UE_LOG(LogTemp, Warning, TEXT("AddWeapon is Fired"));
-	if (newWeapon==nullptr){return Weapons;}
+	if (newWeapon==nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("there's no weapon to add"));
+		return Weapons;
+	}
 	if (Weapons.Num() < 10)
 	{
 		Weapons.Add(newWeapon);
+		AttachWeapon(newWeapon);
 		return Weapons;
 	}
-	Weapons.Add(newWeapon);
-	AttachWeapon(newWeapon);
-	UE_LOG(LogTemp, Display, TEXT("Your log message here"));
+	const auto Size =Weapons.Num();
+	UE_LOG(LogTemp, Display, TEXT("Number of weapons: %d"), Size);
 	return Weapons;
 }
 void UWeaponSystemComponent::FireAction(const EPlayerCharacterState CharacterState) const
@@ -81,7 +85,7 @@ void UWeaponSystemComponent::AttachWeapon( AWeapon* pickUpWeapon)
 		{
 			this->CurrentWeapon=pickUpWeapon;
 		}
-		CurrentWeapon->AttachToComponent(SkeletonMeshComponent,  FAttachmentTransformRules::KeepWorldTransform,TEXT("AR4XSocket"));
+		CurrentWeapon->AttachToComponent(SkeletonMeshComponent,  FAttachmentTransformRules::KeepWorldTransform,FName(*pickUpWeapon->Bone));
 	}
 	
 }

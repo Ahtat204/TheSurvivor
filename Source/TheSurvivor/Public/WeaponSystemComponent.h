@@ -59,14 +59,14 @@ public:
 	/**  @brief Returns a non-owning, thread-safe view of the weapon list.
     @note This is high-performance (no copy, no allocation).
  */
-	inline TArrayView<AWeapon* const> GetAllWeapons();
+	inline TArrayView<AWeapon* const> GetAllWeapons() const;
 
 	/**
 	 * @brief Adds a new weapon actor to the character's inventory.
 	 * @param newWeapon The weapon actor to be registered.
 	 * @return The updated weapon array reference.
 	 */
-	TArrayView<AWeapon* const> AddWeapon(_In_ AWeapon* newWeapon);
+	NODISCARD TArrayView<AWeapon* const> AddWeapon(_In_ AWeapon* newWeapon);
 
 	/**
 	 * @brief Removes a weapon from the registry, typically for dropping or destruction.
