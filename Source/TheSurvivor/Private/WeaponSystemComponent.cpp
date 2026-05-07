@@ -42,6 +42,7 @@ TArrayView<AWeapon* const> UWeaponSystemComponent::AddWeapon(AWeapon* newWeapon)
 	}
 	Weapons.Add(newWeapon);
 	AttachWeapon(newWeapon);
+	UE_LOG(LogTemp, Display, TEXT("Your log message here"));
 	return Weapons;
 }
 void UWeaponSystemComponent::FireAction(const EPlayerCharacterState CharacterState) const
@@ -59,7 +60,7 @@ void UWeaponSystemComponent::ReloadAction(EPlayerCharacterState CharacterState) 
 {
 	if (CurrentWeapon!=nullptr)
 	{
-		if (CharacterState==EPlayerCharacterState::Reloading)
+		if ((static_cast<uint8>(CharacterState) & (static_cast<uint8>(EPlayerCharacterState::Armed) | static_cast<uint8>(EPlayerCharacterState::Reloading)))==1)
 		{
 			
 		}
