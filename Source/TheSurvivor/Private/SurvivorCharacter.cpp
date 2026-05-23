@@ -18,7 +18,7 @@ void ASurvivorCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 		UE_LOG(LogTemp, Display, TEXT("Your log message here"));
 		const auto weapons = WeaponSystemComponent->AddWeapon(gun);
 		if (weapons.IsEmpty()) return;
-		for (auto Weapon : weapons)
+		for (auto const  Weapon : weapons)
 		{
 			UE_LOG(LogTemp, Display, TEXT("weapons name is %s"), *Weapon->GetName())
 		}
@@ -55,18 +55,19 @@ void ASurvivorCharacter::BeginPlay()
 	// TODO:replace  CharacterState = ECharacterState::Idle with EPlayerCharacterState::Idle;
 	if (auto const PlayerController = Cast<APlayerController>(Controller))
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<
-			UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		if (const auto Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(MainMappingContext, 0);
 		}
 	}
+	CharacterState |= EPlayerCharacterState::Armed;
 	checkf(JumpAction, TEXT("JumpAction is null — assign in the editor"));
 	checkf(MoveAction, TEXT("MoveAction is null — assign in the editor"));
 	checkf(ReloadAction, TEXT("ReloadAction is null — assign in the editor"));
 	checkf(LookAction, TEXT("LookAction is null — assign in the editor"));
 	checkf(AimAction, TEXT("AimAction is null — assign in the editor"));
 	checkf(NextWeapon, TEXT("NextWeapon InputAction Asset is not assigned"));
+	checkf(MainMappingContext, TEXT("MainMappingContext is not assigned"));
 }
 
 void ASurvivorCharacter::Reload(const FInputActionValue& Value)
@@ -138,10 +139,12 @@ void ASurvivorCharacter::Aim(const FInputActionValue& Value)
 	if (bIsAiming)
 	{
 		CharacterState |= EPlayerCharacterState::Aiming;
+		UE_LOG(LogTemp, Display, TEXT("Player is aiming %hhd"),CharacterState)
 	}
 	if (!bIsAiming)
 	{
 		CharacterState &= ~EPlayerCharacterState::Aiming;
+		UE_LOG(LogTemp, Display, TEXT("Player is not aiming"))
 	}
 }
 
