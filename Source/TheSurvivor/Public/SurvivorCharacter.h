@@ -71,13 +71,18 @@ private:
 	/** Input action for interacting with objects (e.g., picking up weapons). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* InteractAction;
-	/** Input action for aiming with a weapon. */
+	/** Input action for aiming with a weapon.
+	 * @remark it's bound to mouse right click	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* AimAction;
-	/** Input action for firing a weapon. */
+	/** Input action for firing a weapon.
+	 *  @remark it's bound to mouse left click	
+	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* FireAction;
-	/** Input action for reloading a weapon. */
+	/** Input action for reloading a weapon.
+	 * @remark it's bound to the R  key	
+	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* ReloadAction;
 	/** Input Action for arming the player with a weapon , whether pick up or from weapon arsenal  */
