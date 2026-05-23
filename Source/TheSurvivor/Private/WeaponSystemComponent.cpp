@@ -60,7 +60,7 @@ void UWeaponSystemComponent::FireAction(const EPlayerCharacterState CharacterSta
 {
 	if (CurrentWeapon != nullptr)
 	{
-		if ((static_cast<uint8>(CharacterState) & static_cast<uint8>(EPlayerCharacterState::Firing)) == 1)
+		if ((static_cast<uint8>(CharacterState) & static_cast<uint8>(EPlayerCharacterState::Firing)) != 0)
 		{
 			CurrentWeapon->FireBullet();
 		}
