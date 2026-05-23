@@ -13,25 +13,23 @@ class UInputMappingContext;
 class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
-/**@author Ahtat204
- * @class ASurvivorCharacter
- * @brief Main player character class for the  game.
- *
+/**
+ *	@author Ahtat204
+ *	@class ASurvivorCharacter
+*	@brief Main player character class for the  game.
+
  * This class extends ACharacter to represent the player in a first-person
  * shooter training environment. It defines camera setup, input bindings,
  * weapon handling, and state management for various gameplay mechanics such as
  * shooting, aiming, reloading, and interacting with the environment.
- *
- * ### Responsibilities:
+ *	{@details:
  * - Provides a first-person camera setup using a spring arm and follow camera.
  * - Handles player input actions (movement, looking, jumping, aiming, shooting, reloading, interacting).
  * - Manages weapon states (Unarmed, Armed, Firing, Reloading, Aiming).
  * - Supports attaching and interacting with weapons (e.g., picking up a pistol).
- * - Integrates animations and sounds for weapon actions (reload montage, reload sound).
- *
- * ### Blueprint Integration:
+ * - Integrates animations and sounds for weapon actions (reload montage, reload sound). 
  * Most properties are exposed to Blueprints to allow designers to modify and
- * extend the character’s behavior without modifying C++ code.
+ * extend the character’s behavior without modifying C++ code.@}
  *
  * @note This class is configured with `config=Game` and designed to be extended in both
  *       C++ and Blueprints.
