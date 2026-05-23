@@ -87,7 +87,6 @@ private:
 #pragma endregion
 #pragma region StateMachine 
 #pragma message(__FILE__ ": there's a 15 byte wasted memory padding in this variable")
-	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly,Category = Input, meta = (AllowPrivateAccess = "true"))
 	EPlayerCharacterState CharacterState ;
 #pragma endregion
