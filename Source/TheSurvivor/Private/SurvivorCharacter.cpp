@@ -25,6 +25,11 @@ void ASurvivorCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 	}
 }
 
+bool ASurvivorCharacter::IsActive(const uint8 Bitmask)
+{
+	return Bitmask & static_cast<uint8>(CharacterState); ;
+}
+
 ASurvivorCharacter::ASurvivorCharacter(const FObjectInitializer& ObjectInitialize)
 {
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -72,15 +77,8 @@ void ASurvivorCharacter::BeginPlay()
 
 void ASurvivorCharacter::Reload(const FInputActionValue& Value)
 {
-	// Step 1: Input check (if)
 	if (!Value.Get<bool>()) return;
-
-	// Step 2: Critical components (ensure)
-	if (!ensureMsgf(WeaponSystemComponent, TEXT("WeaponSystemComponent missing")))
-	{
-		return; // Cannot recover
-	}
-	// Step 3: Critical asset (check in development, graceful in shipping)
+	if (!ensureMsgf(WeaponSystemComponent, TEXT("WeaponSystemComponent missing"))) return;
 	auto ReloadMontage = WeaponSystemComponent->CurrentWeapon->ReloadAnimMontage;
 
 #if UE_BUILD_SHIPPING
@@ -94,17 +92,10 @@ void ASurvivorCharacter::Reload(const FInputActionValue& Value)
 	checkf(ReloadMontage, TEXT("Reload animation not assigned for %s"),
 	       *WeaponSystemComponent->CurrentWeapon->GetName());
 #endif
-
-	// Safe to proceed
 	CharacterState |= EPlayerCharacterState::Reloading;
 	PlayAnimMontage(ReloadMontage);
 }
 
-
-void ASurvivorCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
 
 void ASurvivorCharacter::Shoot(const FInputActionValue& Value)
 {

@@ -92,6 +92,10 @@ private:
 #pragma message(__FILE__ ": there's a 15 byte wasted memory padding in this variable")
 	UPROPERTY(EditAnywhere, BlueprintReadOnly,Category = Input, meta = (AllowPrivateAccess = "true"))
 	EPlayerCharacterState CharacterState ;
+	// SomeDude.h
+	UFUNCTION(BlueprintCallable)
+	bool IsActive(UPARAM(meta = (Bitmask, BitmaskEnum = EPlayerCharacterState)) uint8 Bitmask);
+
 #pragma endregion
 
 public:
@@ -113,10 +117,6 @@ protected:
 	MAYBE_UNUSED void Interact(const FInputActionValue& Value);
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 #pragma endregion
-
-public:
-	virtual void Tick(float DeltaTime) override;
-
 #pragma region Getters&setters
 	/** @return The camera boom subObject. */
 	NODISCARD FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
