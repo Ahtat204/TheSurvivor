@@ -13,21 +13,16 @@
 void ASurvivorCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
-	if (const auto gun = Cast<AWeapon>(OtherActor))
+	if (const auto Gun = Cast<AWeapon>(OtherActor))
 	{
 		UE_LOG(LogTemp, Display, TEXT("Your log message here"));
-		const auto weapons = WeaponSystemComponent->AddWeapon(gun);
-		if (weapons.IsEmpty()) return;
-		for (auto const  Weapon : weapons)
-		{
-			UE_LOG(LogTemp, Display, TEXT("weapons name is %s"), *Weapon->GetName())
-		}
+		DetectedWeapon = Gun;
 	}
 }
 
 bool ASurvivorCharacter::IsActive(const uint8 Bitmask)
 {
-	return Bitmask & static_cast<uint8>(CharacterState); ;
+	return Bitmask & static_cast<uint8>(CharacterState);;
 }
 
 ASurvivorCharacter::ASurvivorCharacter(const FObjectInitializer& ObjectInitialize)
@@ -60,12 +55,12 @@ void ASurvivorCharacter::BeginPlay()
 	// TODO:replace  CharacterState = ECharacterState::Idle with EPlayerCharacterState::Idle;
 	if (auto const PlayerController = Cast<APlayerController>(Controller))
 	{
-		if (const auto Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		if (const auto Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(
+			PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(MainMappingContext, 0);
 		}
 	}
-	CharacterState |= EPlayerCharacterState::Armed;
 	checkf(JumpAction, TEXT("JumpAction is null — assign in the editor"));
 	checkf(MoveAction, TEXT("MoveAction is null — assign in the editor"));
 	checkf(ReloadAction, TEXT("ReloadAction is null — assign in the editor"));
@@ -99,10 +94,7 @@ void ASurvivorCharacter::Reload(const FInputActionValue& Value)
 
 void ASurvivorCharacter::Shoot(const FInputActionValue& Value)
 {
-	if (!ensureMsgf(WeaponSystemComponent, TEXT("WeaponSystemComponent is null")))
-	{
-		return;
-	}
+	if (!ensureMsgf(WeaponSystemComponent, TEXT("WeaponSystemComponent is null"))) return;
 	const bool bIsShooting = Value.Get<bool>();
 	uint8 current = static_cast<uint8>(CharacterState) &
 		(static_cast<uint8>(EPlayerCharacterState::Aiming) | static_cast<uint8>(EPlayerCharacterState::Armed));
@@ -130,12 +122,12 @@ void ASurvivorCharacter::Aim(const FInputActionValue& Value)
 	if (bIsAiming)
 	{
 		CharacterState |= EPlayerCharacterState::Aiming;
-		UE_LOG(LogTemp, Display, TEXT("Player is aiming %hhd"),CharacterState)
+		UE_LOG(LogTemp, Warning, TEXT("Player is aiming %hhd"), CharacterState)
 	}
 	if (!bIsAiming)
 	{
 		CharacterState &= ~EPlayerCharacterState::Aiming;
-		UE_LOG(LogTemp, Display, TEXT("Player is not aiming"))
+		UE_LOG(LogTemp, Warning, TEXT("Player is not aiming"))
 	}
 }
 
@@ -163,7 +155,6 @@ void ASurvivorCharacter::Move(const FInputActionValue& Value)
 	}
 }
 
-
 void ASurvivorCharacter::Look(const FInputActionValue& Value)
 {
 	const auto LookAxisVector = Value.Get<FVector2D>();
@@ -174,8 +165,18 @@ void ASurvivorCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
-void ASurvivorCharacter::Interact(const FInputActionValue& Value)
+void ASurvivorCharacter::Pickup(const FInputActionValue& Value)
 {
+	if (DetectedWeapon == nullptr) return;
+	const auto value = Value.Get<bool>();
+	if (value)
+	{
+		auto weapon = Cast<AWeapon>(DetectedWeapon);
+		[[maybe_unused]] const auto Weapons = WeaponSystemComponent->AddWeapon(weapon);
+		CharacterState |= EPlayerCharacterState::Armed;
+		bool active = IsActive(static_cast<uint8>(EPlayerCharacterState::Armed));
+		UE_LOG(LogTemp, Warning, TEXT("Player is aiming %d"), active);
+	}
 }
 
 void ASurvivorCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -190,5 +191,6 @@ void ASurvivorCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &ASurvivorCharacter::Aim);
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this, &ASurvivorCharacter::Shoot);
 		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Started, this, &ASurvivorCharacter::Reload);
+		EnhancedInputComponent->BindAction(NextWeapon, ETriggerEvent::Started, this, &ASurvivorCharacter::Pickup);
 	}
 }
