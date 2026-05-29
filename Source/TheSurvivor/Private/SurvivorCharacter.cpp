@@ -95,6 +95,7 @@ void ASurvivorCharacter::Reload(const FInputActionValue& Value)
 void ASurvivorCharacter::Shoot(const FInputActionValue& Value)
 {
 	if (!ensureMsgf(WeaponSystemComponent, TEXT("WeaponSystemComponent is null"))) return;
+	if (WeaponSystemComponent->CurrentWeapon == nullptr) return;
 	const bool bIsShooting = Value.Get<bool>();
 	uint8 current = static_cast<uint8>(CharacterState) &
 		(static_cast<uint8>(EPlayerCharacterState::Aiming) | static_cast<uint8>(EPlayerCharacterState::Armed));
@@ -102,11 +103,12 @@ void ASurvivorCharacter::Shoot(const FInputActionValue& Value)
 	 * uint8 current=(uint8)CharacterState & (uint8)EPlayerCharacterState::Aiming | (uint8)EPlayerCharacterState::Armed;
 	 * the OR will never be checked since AND higher precedence that OR
 	 */
-
+	
 	if (current == 0) return;
 	if (bIsShooting)
 	{
 		CharacterState |= EPlayerCharacterState::Firing;
+		
 	}
 	if (!bIsShooting)
 	{
@@ -168,8 +170,7 @@ void ASurvivorCharacter::Look(const FInputActionValue& Value)
 void ASurvivorCharacter::Pickup(const FInputActionValue& Value)
 {
 	if (DetectedWeapon == nullptr) return;
-	const auto value = Value.Get<bool>();
-	if (value)
+	if (Value.Get<bool>())
 	{
 		auto weapon = Cast<AWeapon>(DetectedWeapon);
 		[[maybe_unused]] const auto Weapons = WeaponSystemComponent->AddWeapon(weapon);
