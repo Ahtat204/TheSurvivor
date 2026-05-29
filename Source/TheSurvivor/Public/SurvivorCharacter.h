@@ -14,14 +14,14 @@ class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
 /**
- *	@author Ahtat204
- *	@class ASurvivorCharacter
+*	@class ASurvivorCharacter
 *	@brief Main player character class for the  game.
+@author Ahtat204 <br/>
 
  * This class extends ACharacter to represent the player in a first-person
  * shooter training environment. It defines camera setup, input bindings,
  * weapon handling, and state management for various gameplay mechanics such as
- * shooting, aiming, reloading, and interacting with the environment.
+ * shooting, aiming, reloading, and interacting with the environment
  *	{@details:
  * - Provides a first-person camera setup using a spring arm and follow camera.
  * - Handles player input actions (movement, looking, jumping, aiming, shooting, reloading, interacting).
@@ -33,6 +33,7 @@ class UCameraComponent;
  *
  * @note This class is configured with `config=Game` and designed to be extended in both
  *       C++ and Blueprints.
+ * 
  */
 UCLASS()
 class THESURVIVOR_API ASurvivorCharacter : public ACharacter
@@ -42,6 +43,8 @@ public:
 
 private:
 	GENERATED_BODY()
+	/** used to specify the exact weapon to pick up inside the @code AActor::NotifyActorBeginOverlap*/
+	TWeakObjectPtr<AWeapon> DetectedWeapon;
 #pragma region Components
 	/** Camera boom for positioning the follow camera behind the player. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components, meta = (AllowPrivateAccess = "true"))
@@ -88,10 +91,10 @@ private:
 	UInputAction* NextWeapon;
 
 #pragma endregion
-#pragma region StateMachine 
-#pragma message(__FILE__ ": there's a 15 byte wasted memory padding in this variable")
-	UPROPERTY(EditAnywhere, BlueprintReadOnly,Category = Input, meta = (AllowPrivateAccess = "true"))
-	EPlayerCharacterState CharacterState ;
+#pragma region StateMachine
+#pragma message(__FILE__ ": there's a 7 byte wasted memory padding in this variable")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	EPlayerCharacterState CharacterState;
 	// SomeDude.h
 	UFUNCTION(BlueprintCallable)
 	bool IsActive(UPARAM(meta = (Bitmask, BitmaskEnum = EPlayerCharacterState)) uint8 Bitmask);
@@ -100,6 +103,7 @@ private:
 
 public:
 	explicit ASurvivorCharacter(const FObjectInitializer& ObjectInitialize);
+
 protected:
 	virtual void BeginPlay() override;
 #pragma region InputsFunctions
@@ -113,6 +117,8 @@ protected:
 	void Move(const FInputActionValue& Value);
 	/** Handles looking input (camera rotation). */
 	void Look(const FInputActionValue& Value);
+	/** Handles pickups,Mainly weapon pickup ,since the  	 */
+	void Pickup(const FInputActionValue& Value);
 	/** @note this function is just the first idea of implementing interaction , maybe will be moved to a dedicated Component */
 	MAYBE_UNUSED void Interact(const FInputActionValue& Value);
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -124,6 +130,3 @@ protected:
 	NODISCARD FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 #pragma endregion
 };
-
-
-
