@@ -43,7 +43,7 @@ public:
 
 private:
 	GENERATED_BODY()
-	/** used to specify the exact weapon to pick up inside the @code AActor::NotifyActorBeginOverlap*/
+	/** used to specify the exact weapon to pick up inside the @code AActor::NotifyActorBeginOverlap */
 	TWeakObjectPtr<AWeapon> DetectedWeapon;
 #pragma region Components
 	/** Camera boom for positioning the follow camera behind the player. */
@@ -97,7 +97,7 @@ private:
 	EPlayerCharacterState CharacterState;
 	// SomeDude.h
 	UFUNCTION(BlueprintCallable)
-	bool IsActive(UPARAM(meta = (Bitmask, BitmaskEnum = EPlayerCharacterState)) uint8 Bitmask);
+	inline bool IsActive(UPARAM(meta = (Bitmask, BitmaskEnum = EPlayerCharacterState)) uint8 Bitmask);
 
 #pragma endregion
 
@@ -129,4 +129,5 @@ protected:
 	/** @return The follow camera subObject. */
 	NODISCARD FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 #pragma endregion
+	
 };
