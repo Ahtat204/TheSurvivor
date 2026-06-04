@@ -73,7 +73,7 @@ enum class EPlayerCharacterState : uint8
  */
 inline void Toggle(EPlayerCharacterState CharacterState)
 {
-	
+	//auto result=(__underlying_type(EPlayerCharacterState);
 }
 
 //ENUM_CLASS_FLAGS to enable bitwise operators (| , & , ^) for this enum
