@@ -121,10 +121,12 @@ void ASurvivorCharacter::Aim(const FInputActionValue& Value)
 	const auto bIsAiming = Value.Get<bool>();
 	uint8 current = static_cast<uint8>(CharacterState) & static_cast<uint8>(EPlayerCharacterState::Armed);
 	if (current == 0)return;
+	bool active=IsActive(static_cast<uint8>(EPlayerCharacterState::Armed));
 	if (bIsAiming)
 	{
 		CharacterState |= EPlayerCharacterState::Aiming;
 		UE_LOG(LogTemp, Warning, TEXT("Player is aiming %hhd"), CharacterState)
+		UE_LOG(LogTemp, Warning, TEXT("Player is aiming %hhd"), active)
 	}
 	if (!bIsAiming)
 	{

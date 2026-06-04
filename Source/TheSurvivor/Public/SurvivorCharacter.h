@@ -14,26 +14,29 @@ class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
 /**
-*	@class ASurvivorCharacter
-*	@brief Main player character class for the  game.
-@author Ahtat204 <br/>
-
+ * \copydoc ACharacter
+ * \class ASurvivorCharacter
+ * \brief Main player character class for the game.
+ * \author Ahtat204
+ *
+ * \details
  * This class extends ACharacter to represent the player in a first-person
  * shooter training environment. It defines camera setup, input bindings,
  * weapon handling, and state management for various gameplay mechanics such as
- * shooting, aiming, reloading, and interacting with the environment
- *	{@details:
+ * shooting, aiming, reloading, and interacting with the environment.
+ *
+ * Features:
  * - Provides a first-person camera setup using a spring arm and follow camera.
  * - Handles player input actions (movement, looking, jumping, aiming, shooting, reloading, interacting).
  * - Manages weapon states (Unarmed, Armed, Firing, Reloading, Aiming).
  * - Supports attaching and interacting with weapons (e.g., picking up a pistol).
- * - Integrates animations and sounds for weapon actions (reload montage, reload sound). 
- * Most properties are exposed to Blueprints to allow designers to modify and
- * extend the character’s behavior without modifying C++ code.@}
+ * - Integrates animations and sounds for weapon actions (reload montage, reload sound).
  *
- * @note This class is configured with `config=Game` and designed to be extended in both
- *       C++ and Blueprints.
- * 
+ * Most properties are exposed to Blueprints to allow designers to modify and
+ * extend the character’s behavior without modifying C++ code.
+ *
+ * \note This class is configured with `config=Game` and designed to be extended
+ *       in both C++ and Blueprints.
  */
 UCLASS()
 class THESURVIVOR_API ASurvivorCharacter : public ACharacter
@@ -43,7 +46,7 @@ public:
 
 private:
 	GENERATED_BODY()
-	/** used to specify the exact weapon to pick up inside the @code AActor::NotifyActorBeginOverlap */
+	/** used to specify the exact weapon to pick up inside the {@code AActor::NotifyActorBeginOverlap} */
 	TWeakObjectPtr<AWeapon> DetectedWeapon;
 #pragma region Components
 	/** Camera boom for positioning the follow camera behind the player. */
@@ -86,7 +89,7 @@ private:
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* ReloadAction;
-	/** Input Action for arming the player with a weapon , whether pick up or from weapon arsenal  */
+	/** Input Action for arming the player with a weapon , whether pick up or from weapon inventory  */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* NextWeapon;
 
@@ -95,8 +98,7 @@ private:
 #pragma message(__FILE__ ": there's a 7 byte wasted memory padding in this variable")
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	EPlayerCharacterState CharacterState;
-	// SomeDude.h
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable,DisplayName="IsActive")
 	inline bool IsActive(UPARAM(meta = (Bitmask, BitmaskEnum = EPlayerCharacterState)) uint8 Bitmask);
 
 #pragma endregion
