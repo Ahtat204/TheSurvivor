@@ -96,9 +96,9 @@ private:
 #pragma endregion
 #pragma region StateMachine
 #pragma message(__FILE__ ": there's a 7 byte wasted memory padding in this variable")
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true", BitMask))
 	EPlayerCharacterState CharacterState;
-	UFUNCTION(BlueprintCallable,DisplayName="IsActive")
+	UFUNCTION(BlueprintCallable, DisplayName="IsActive")
 	inline bool IsActive(UPARAM(meta = (Bitmask, BitmaskEnum = EPlayerCharacterState)) uint8 Bitmask);
 
 #pragma endregion
@@ -131,5 +131,4 @@ protected:
 	/** @return The follow camera subObject. */
 	NODISCARD FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 #pragma endregion
-	
 };
