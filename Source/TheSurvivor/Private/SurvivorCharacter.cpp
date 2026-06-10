@@ -110,6 +110,7 @@ void ASurvivorCharacter::Shoot(const FInputActionValue& Value)
 	if (bIsShooting)
 	{
 		CharacterState |= EPlayerCharacterState::Firing;
+		WeaponSystemComponent->FireAction(CharacterState);
 		
 	}
 	if (!bIsShooting)
