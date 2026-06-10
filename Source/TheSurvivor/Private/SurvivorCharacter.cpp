@@ -94,8 +94,10 @@ void ASurvivorCharacter::Reload(const FInputActionValue& Value)
 
 void ASurvivorCharacter::Shoot(const FInputActionValue& Value)
 {
+	
 	if (!ensureMsgf(WeaponSystemComponent, TEXT("WeaponSystemComponent is null"))) return;
 	if (WeaponSystemComponent->CurrentWeapon == nullptr) return;
+	UE_LOG(LogTemp, Warning, TEXT("Player is aiming %hhd"), CharacterState)
 	const bool bIsShooting = Value.Get<bool>();
 	uint8 current = static_cast<uint8>(CharacterState) &
 		(static_cast<uint8>(EPlayerCharacterState::Aiming) | static_cast<uint8>(EPlayerCharacterState::Armed));
@@ -192,7 +194,8 @@ void ASurvivorCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ASurvivorCharacter::Look);
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Triggered, this, &ASurvivorCharacter::Aim);
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &ASurvivorCharacter::Aim);
-		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this, &ASurvivorCharacter::Shoot);
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &ASurvivorCharacter::Shoot);
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, this, &ASurvivorCharacter::Shoot);
 		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Started, this, &ASurvivorCharacter::Reload);
 		EnhancedInputComponent->BindAction(NextWeapon, ETriggerEvent::Started, this, &ASurvivorCharacter::Pickup);
 	}
