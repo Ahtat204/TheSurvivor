@@ -32,7 +32,7 @@ public:
 	/** Pointer to the currently active weapon in the character's hands. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	TObjectPtr<AWeapon> CurrentWeapon;
-
+	
 protected:
 	virtual void BeginPlay() override;
 

@@ -98,6 +98,8 @@ void ASurvivorCharacter::Shoot(const FInputActionValue& Value)
 	if (!ensureMsgf(WeaponSystemComponent, TEXT("WeaponSystemComponent is null"))) return;
 	if (WeaponSystemComponent->CurrentWeapon == nullptr) return;
 	UE_LOG(LogTemp, Warning, TEXT("Player is aiming %hhd"), CharacterState)
+	auto ammo=WeaponSystemComponent->CurrentWeapon->CurrentAmmo;
+	if (ammo==0)return;
 	const bool bIsShooting = Value.Get<bool>();
 	uint8 current = static_cast<uint8>(CharacterState) &
 		(static_cast<uint8>(EPlayerCharacterState::Aiming) | static_cast<uint8>(EPlayerCharacterState::Armed));
@@ -113,7 +115,7 @@ void ASurvivorCharacter::Shoot(const FInputActionValue& Value)
 		WeaponSystemComponent->FireAction(CharacterState);
 		
 	}
-	if (!bIsShooting)
+	if (!bIsShooting || ammo==0)
 	{
 		CharacterState &= ~EPlayerCharacterState::Firing;
 	}
@@ -140,6 +142,7 @@ void ASurvivorCharacter::Aim(const FInputActionValue& Value)
 
 void ASurvivorCharacter::Move(const FInputActionValue& Value)
 {
+	if (Controller == nullptr)return;
 	const auto MovementVector = Value.Get<FVector2D>();
 	if (MovementVector.Length() == 0)
 	{
@@ -151,15 +154,12 @@ void ASurvivorCharacter::Move(const FInputActionValue& Value)
 		CharacterState &= ~EPlayerCharacterState::Idle; //switch Idle to off
 		CharacterState |= EPlayerCharacterState::Moving; //switch moving to on
 	}
-	if (Controller != nullptr)
-	{
-		const auto Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
-		const auto ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-		const auto RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-		AddMovementInput(ForwardDirection, MovementVector.Y);
-		AddMovementInput(RightDirection, MovementVector.X);
-	}
+	const auto Rotation = Controller->GetControlRotation();
+	const FRotator YawRotation(0, Rotation.Yaw, 0);
+	const auto ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+	const auto RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+	AddMovementInput(ForwardDirection, MovementVector.Y);
+	AddMovementInput(RightDirection, MovementVector.X);
 }
 
 void ASurvivorCharacter::Look(const FInputActionValue& Value)
