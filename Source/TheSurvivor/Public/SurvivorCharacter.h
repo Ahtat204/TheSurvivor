@@ -8,7 +8,6 @@
 
 class AWeapon;
 class UWeaponSystemComponent;
-class USoundCue;
 class UInputMappingContext;
 class UInputAction;
 class USpringArmComponent;
