@@ -68,6 +68,7 @@ void ASurvivorCharacter::BeginPlay()
 	checkf(AimAction, TEXT("AimAction is null — assign in the editor"));
 	checkf(NextWeapon, TEXT("NextWeapon InputAction Asset is not assigned"));
 	checkf(MainMappingContext, TEXT("MainMappingContext is not assigned"));
+	CharacterState=EPlayerCharacterState::Idle;
 }
 
 void ASurvivorCharacter::Reload(const FInputActionValue& Value)
@@ -115,14 +116,15 @@ void ASurvivorCharacter::Shoot(const FInputActionValue& Value)
 		WeaponSystemComponent->FireAction(CharacterState);
 		
 	}
-	if (!bIsShooting || ammo==0)
+	if (!bIsShooting)
 	{
 		CharacterState &= ~EPlayerCharacterState::Firing;
 	}
 }
-
 void ASurvivorCharacter::Aim(const FInputActionValue& Value)
 {
+	if (!ensureMsgf(WeaponSystemComponent, TEXT("WeaponSystemComponent is null"))) return;
+	if (WeaponSystemComponent->CurrentWeapon == nullptr) return;
 	const auto bIsAiming = Value.Get<bool>();
 	uint8 current = static_cast<uint8>(CharacterState) & static_cast<uint8>(EPlayerCharacterState::Armed);
 	if (current == 0)return;

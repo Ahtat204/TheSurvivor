@@ -64,7 +64,6 @@ void UWeaponSystemComponent::FireAction(const EPlayerCharacterState CharacterSta
 		{
 			CurrentWeapon->FireBullet();
 		}
-		if (CurrentWeapon->CurrentAmmo==0)return;
 	}
 }
 
