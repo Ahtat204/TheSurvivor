@@ -2,8 +2,10 @@
 
 
 #include "Npc.h"
+#include "NpcAIController.h"
 
 ANpc::ANpc(const FObjectInitializer& ObjectInitializer)
 {
-	
+	AIControllerClass=ANpcAIController::StaticClass();
+	AutoPossessAI=EAutoPossessAI::PlacedInWorld;
 }
