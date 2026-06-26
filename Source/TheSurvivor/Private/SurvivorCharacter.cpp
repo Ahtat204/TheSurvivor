@@ -15,7 +15,7 @@ void ASurvivorCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 	Super::NotifyActorBeginOverlap(OtherActor);
 	if (const auto Gun = Cast<AWeapon>(OtherActor))
 	{
-		UE_LOG(LogTemp, Display, TEXT("Your log message here"));
+		LOG("Your log message here");
 		DetectedWeapon = Gun;
 	}
 }
