@@ -20,6 +20,10 @@ void ASurvivorCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 	}
 }
 
+ASurvivorCharacter::ASurvivorCharacter()
+{
+}
+
 bool ASurvivorCharacter::IsActive(const uint8 Bitmask)
 {
 	return Bitmask & static_cast<uint8>(CharacterState);;

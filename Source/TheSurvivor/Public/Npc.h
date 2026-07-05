@@ -16,5 +16,11 @@ class ANpc : public ASurvivorCharacter
 	GENERATED_BODY()
 	public:
 	explicit ANpc(const FObjectInitializer& ObjectInitializer);
+
+protected:
+	virtual void BeginPlay() override;
+
+public:
+	ANpc();
 	
 };

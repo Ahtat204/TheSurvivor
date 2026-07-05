@@ -3,3 +3,6 @@
 
 #include "NpcAIController.h"
 
+ANpcAIController::ANpcAIController(const FObjectInitializer& ObjectInitializer)
+{
+}

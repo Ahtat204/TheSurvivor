@@ -42,6 +42,7 @@ class THESURVIVOR_API ASurvivorCharacter : public ACharacter
 {
 public:
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+	ASurvivorCharacter();
 
 private:
 	GENERATED_BODY()
