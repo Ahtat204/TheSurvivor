@@ -13,5 +13,8 @@ UCLASS()
 class THESURVIVOR_API UBTTaskNode_MoveRandom : public UBTTaskNode
 {
 	GENERATED_BODY()
-	
+
+public:
+	virtual void OnGameplayTaskActivated(UGameplayTask& Task) override;
+	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 };

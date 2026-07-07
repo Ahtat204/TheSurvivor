@@ -3,3 +3,7 @@
 
 #include "tasks/BTTaskNode_MoveRandom.h"
 
+void UBTTaskNode_MoveRandom::OnGameplayTaskActivated(UGameplayTask& Task)
+{
+	Super::OnGameplayTaskActivated(Task);
+}
