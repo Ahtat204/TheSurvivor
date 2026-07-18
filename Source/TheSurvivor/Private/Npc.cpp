@@ -15,6 +15,7 @@ ANpc::ANpc(const FObjectInitializer& ObjectInitializer)
 void ANpc::BeginPlay()
 {
 	Super::BeginPlay();
+	if (!ensureMsgf(BehaviorTree, TEXT("Behavior Tree is missing"))) return;
 	
 }
 

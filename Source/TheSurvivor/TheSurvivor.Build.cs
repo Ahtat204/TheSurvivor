@@ -8,7 +8,7 @@ public class TheSurvivor : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" ,"Niagara"});
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" ,"Niagara","AIModule","GameplayTasks","NavigationSystem"});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "EnhancedInput" });
 		PublicIncludePaths.AddRange( new string[] {"TheSurvivor/Public/**"});

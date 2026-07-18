@@ -5,14 +5,20 @@
 #include "CoreMinimal.h"
 #include "AIController.h"
 #include "NpcAIController.generated.h"
-
+class ANpc;
 /**
  * 
  */
 UCLASS()
 class THESURVIVOR_API ANpcAIController : public AAIController
 {
+
 	GENERATED_BODY()
-	public:
+
+	ANpc* ControlledPawn;
+protected:
+	virtual void OnPossess(APawn* InPawn) override;
+public:
 	explicit ANpcAIController(const FObjectInitializer& ObjectInitializer);
+	
 };

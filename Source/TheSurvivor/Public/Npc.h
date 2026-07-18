@@ -6,21 +6,25 @@
 #include "SurvivorCharacter.h"
 #include "Npc.generated.h"
 
+class UBehaviorTree;
 /**
  * 
  */
 UCLASS()
 class ANpc : public ASurvivorCharacter
 {
-	
 	GENERATED_BODY()
-	public:
+
+public:
 	explicit ANpc(const FObjectInitializer& ObjectInitializer);
 
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AI", meta=(AllowPrivateAccess=true))
+	UBehaviorTree* BehaviorTree;
 	virtual void BeginPlay() override;
 
 public:
 	ANpc();
-	
+	UFUNCTION()
+	UBehaviorTree* GetBehaviorTree() const { return BehaviorTree; }
 };
