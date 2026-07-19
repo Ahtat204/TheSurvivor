@@ -42,8 +42,7 @@ class THESURVIVOR_API ASurvivorCharacter : public ACharacter
 {
 public:
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
-	ASurvivorCharacter();
-
+	ASurvivorCharacter() {  }
 private:
 	GENERATED_BODY()
 	/** used to specify the exact weapon to pick up inside the {@code AActor::NotifyActorBeginOverlap} */

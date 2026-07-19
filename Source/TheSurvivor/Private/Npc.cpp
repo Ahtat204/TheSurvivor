@@ -17,6 +17,3 @@ void ANpc::BeginPlay()
 	Super::BeginPlay();
 	
 }
-
-ANpc::ANpc()
-{  }

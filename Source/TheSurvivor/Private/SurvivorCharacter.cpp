@@ -20,9 +20,6 @@ void ASurvivorCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 	}
 }
 
-ASurvivorCharacter::ASurvivorCharacter()
-{
-}
 
 bool ASurvivorCharacter::IsActive(const uint8 Bitmask)
 {
@@ -92,7 +89,6 @@ void ASurvivorCharacter::Reload(const FInputActionValue& Value)
 	checkf(ReloadMontage, TEXT("Reload animation not assigned for %s"),
 	       *WeaponSystemComponent->CurrentWeapon->GetName());
 #endif
-	CharacterState |= EPlayerCharacterState::Reloading;
 	PlayAnimMontage(ReloadMontage);
 }
 

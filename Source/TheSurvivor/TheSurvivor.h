@@ -61,10 +61,9 @@ enum class EPlayerCharacterState : uint8
 	Crouch =3 UMETA(DisplayName="Crouching",ToolTip="Indicates the Player is Crouching"),
 	// --- ZONE 2: ACTION FLAGS (Additive: Bits 4-7) ---
 	// We start at 1<<4 to avoid touching the Locomotion bits.
-	Armed       = 1 << 4 UMETA(DisplayName="",ToolTip=""), // 0001 0000 (16)
-	Firing      = 1 << 5 UMETA(DisplayName="",ToolTip=""), // 0010 0000 (32)
-	Reloading   = 1 << 6 UMETA(DisplayName="",ToolTip=""), // 0100 0000 (64)
-	Aiming      = 1 << 7 UMETA(DisplayName="",ToolTip=""), // 1000 0000 (128)
+	Armed       = 1 << 4 UMETA(DisplayName="Armed",ToolTip="Indicates that the player is Armed"), // 0001 0000 (16)
+	Firing      = 1 << 5 UMETA(DisplayName="Shooting",ToolTip="Indicates that the player is Shooting"), // 0010 0000 (32)
+	Aiming   = 1 << 6 UMETA(DisplayName="Aiming",ToolTip="Indicates that the player is Aiming"), // 0100 0000 (64)
 };
 //to remove a state (ex:making Player just unarmed while walking ) ,we just do Player.CharacterState &= ~EPlayerCharacterState::Armed;
 

@@ -71,11 +71,7 @@ void UWeaponSystemComponent::ReloadAction(const EPlayerCharacterState CharacterS
 {
 	if (CurrentWeapon != nullptr)
 	{
-		if ((static_cast<uint8>(CharacterState) & (static_cast<uint8>(EPlayerCharacterState::Armed) | static_cast<uint8>
-			(EPlayerCharacterState::Reloading))) == 1)
-		{
-			
-		}
+		
 	}
 }
 

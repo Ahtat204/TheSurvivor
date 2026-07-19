@@ -20,7 +20,5 @@ class ANpc : public ASurvivorCharacter
 protected:
 	virtual void BeginPlay() override;
 
-public:
-	ANpc();
 	
 };
