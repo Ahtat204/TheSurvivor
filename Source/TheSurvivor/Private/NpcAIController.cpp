@@ -2,15 +2,15 @@
 
 
 #include "NpcAIController.h"
-
 #include "Npc.h"
 #include "BehaviorTree/BehaviorTree.h"
 
 void ANpcAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
-	if (ControlledPawn=Cast<ANpc>(InPawn))
+	if (const auto pawn=Cast<ANpc>(InPawn))
 	{
+		ControlledPawn=pawn;
 		if (const auto  BehaviorTree=ControlledPawn->GetBehaviorTree())
 		{
 			UBlackboardComponent* BlackBoard;

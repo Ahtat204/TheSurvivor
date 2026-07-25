@@ -92,8 +92,8 @@ void ASurvivorCharacter::Reload(const FInputActionValue& Value)
 	checkf(ReloadMontage, TEXT("Reload animation not assigned for %s"),
 	       *WeaponSystemComponent->CurrentWeapon->GetName());
 #endif
-	CharacterState |= EPlayerCharacterState::Reloading;
 	PlayAnimMontage(ReloadMontage);
+	WeaponSystemComponent->ReloadAction(CharacterState);
 }
 
 

@@ -58,25 +58,16 @@ TArrayView<AWeapon* const> UWeaponSystemComponent::AddWeapon(AWeapon* newWeapon)
 
 void UWeaponSystemComponent::FireAction(const EPlayerCharacterState CharacterState) const
 {
-	if (CurrentWeapon != nullptr)
-	{
-		if ((static_cast<uint8>(CharacterState) & static_cast<uint8>(EPlayerCharacterState::Firing)) != 0)
-		{
-			CurrentWeapon->FireBullet();
-		}
-	}
+	if (CurrentWeapon == nullptr) return;
+	if ((static_cast<uint8>(CharacterState) & static_cast<uint8>(EPlayerCharacterState::Firing)) == 0) return;
+	CurrentWeapon->FireBullet();
 }
 
 void UWeaponSystemComponent::ReloadAction(const EPlayerCharacterState CharacterState) const
 {
-	if (CurrentWeapon != nullptr)
-	{
-		if ((static_cast<uint8>(CharacterState) & (static_cast<uint8>(EPlayerCharacterState::Armed) | static_cast<uint8>
-			(EPlayerCharacterState::Reloading))) == 1)
-		{
-			
-		}
-	}
+	if (CurrentWeapon == nullptr)return;
+	if ((static_cast<uint8>(CharacterState) & static_cast<uint8>(EPlayerCharacterState::Armed)) == 0)return;
+	CurrentWeapon->CurrentAmmo = CurrentWeapon->MagazineSize;
 }
 
 
@@ -88,7 +79,6 @@ void UWeaponSystemComponent::AttachWeapon(AWeapon* pickUpWeapon) noexcept
 	if (pickUpWeapon == nullptr)return;
 	auto weaponType = pickUpWeapon->WeaponType;
 	if (weaponType == EWeaponType::Rifle)
-	{
 		if (CurrentWeapon == nullptr)
 		{
 			this->CurrentWeapon = pickUpWeapon;
@@ -97,7 +87,6 @@ void UWeaponSystemComponent::AttachWeapon(AWeapon* pickUpWeapon) noexcept
 			                                 FName(*pickUpWeapon->Bone));
 			//FAttachmentTransformRules::SnapToTargetNotIncludingScale to match the socket’s position/rotation exactly.
 		}
-	}
 }
 
 TArrayView<AWeapon* const> UWeaponSystemComponent::RemoveWeapon(int16 Index)

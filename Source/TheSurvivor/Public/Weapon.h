@@ -77,7 +77,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Ammunition",
 		meta = (ToolTip="Maximum number of bullets this weapon can hold in a magazine", AllowPrivateAccess = "true",
 			ClampMax=100, ClampMin=1))
-	uint8 MagazineSize;
+	uint8 MagazineSize=20;
 	/** Current amount of ammunition remaining in the magazine. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Ammunition", meta = (AllowPrivateAccess = "true", ClampMin=1))
 	uint8 CurrentAmmo = MagazineSize;

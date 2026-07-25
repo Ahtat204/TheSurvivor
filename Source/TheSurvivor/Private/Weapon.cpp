@@ -53,7 +53,7 @@ void AWeapon::FireBullet()
 		if (BulletClass)
 		{
 			const FActorSpawnParameters SpawnParams;
-			auto Bullet = GetWorld()->SpawnActor<ABullet>(BulletClass, SpawnLocation, SpawnRotation, SpawnParams);
+			 GetWorld()->SpawnActor<ABullet>(BulletClass, SpawnLocation, SpawnRotation, SpawnParams);
 			UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation(), 3,5);
 			CurrentAmmo--;
 		}
