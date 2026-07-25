@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "SurvivorCharacter.h"
+#include"NavigationSystem.h"
 #include "Npc.generated.h"
 
 class UBehaviorTree;
