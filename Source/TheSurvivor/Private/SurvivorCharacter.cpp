@@ -3,6 +3,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Weapon.h"
+#include "TheSurvivor/Public/AbilitySystem/SurvivorAbilitySystemComponent.h"
 #include "WeaponSystemComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -47,6 +48,8 @@ ASurvivorCharacter::ASurvivorCharacter(const FObjectInitializer& ObjectInitializ
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
+	AbilitySystemComponent=CreateDefaultSubobject<USurvivorAbilitySystemComponent>("AbilitySystemComponent");
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 }
 
 void ASurvivorCharacter::BeginPlay()
@@ -68,7 +71,7 @@ void ASurvivorCharacter::BeginPlay()
 	checkf(AimAction, TEXT("AimAction is null — assign in the editor"));
 	checkf(NextWeapon, TEXT("NextWeapon InputAction Asset is not assigned"));
 	checkf(MainMappingContext, TEXT("MainMappingContext is not assigned"));
-	CharacterState=EPlayerCharacterState::Idle;
+	CharacterState = EPlayerCharacterState::Idle;
 }
 
 void ASurvivorCharacter::Reload(const FInputActionValue& Value)
@@ -95,12 +98,11 @@ void ASurvivorCharacter::Reload(const FInputActionValue& Value)
 
 void ASurvivorCharacter::Shoot(const FInputActionValue& Value)
 {
-	
 	if (!ensureMsgf(WeaponSystemComponent, TEXT("WeaponSystemComponent is null"))) return;
 	if (WeaponSystemComponent->CurrentWeapon == nullptr) return;
 	UE_LOG(LogTemp, Warning, TEXT("Player is aiming %hhd"), CharacterState)
-	auto ammo=WeaponSystemComponent->CurrentWeapon->CurrentAmmo;
-	if (ammo==0)
+	auto ammo = WeaponSystemComponent->CurrentWeapon->CurrentAmmo;
+	if (ammo == 0)
 	{
 		CharacterState &= ~EPlayerCharacterState::Firing;
 		return;
@@ -112,19 +114,19 @@ void ASurvivorCharacter::Shoot(const FInputActionValue& Value)
 	 * uint8 current=(uint8)CharacterState & (uint8)EPlayerCharacterState::Aiming | (uint8)EPlayerCharacterState::Armed;
 	 * the OR will never be checked since AND higher precedence that OR
 	 */
-	
+
 	if (current == 0) return;
 	if (bIsShooting)
 	{
 		CharacterState |= EPlayerCharacterState::Firing;
 		WeaponSystemComponent->FireAction(CharacterState);
-		
 	}
 	if (!bIsShooting)
 	{
 		CharacterState &= ~EPlayerCharacterState::Firing;
 	}
 }
+
 void ASurvivorCharacter::Aim(const FInputActionValue& Value)
 {
 	if (!ensureMsgf(WeaponSystemComponent, TEXT("WeaponSystemComponent is null"))) return;
@@ -132,7 +134,7 @@ void ASurvivorCharacter::Aim(const FInputActionValue& Value)
 	const auto bIsAiming = Value.Get<bool>();
 	uint8 current = static_cast<uint8>(CharacterState) & static_cast<uint8>(EPlayerCharacterState::Armed);
 	if (current == 0)return;
-	bool active=IsActive(static_cast<uint8>(EPlayerCharacterState::Armed));
+	bool active = IsActive(static_cast<uint8>(EPlayerCharacterState::Armed));
 	if (bIsAiming)
 	{
 		CharacterState |= EPlayerCharacterState::Aiming;
@@ -183,7 +185,7 @@ void ASurvivorCharacter::Pickup(const FInputActionValue& Value)
 	if (DetectedWeapon == nullptr) return;
 	if (Value.Get<bool>())
 	{
-		auto weapon = Cast<AWeapon>(DetectedWeapon);
+		const auto weapon = Cast<AWeapon>(DetectedWeapon);
 		[[maybe_unused]] const auto Weapons = WeaponSystemComponent->AddWeapon(weapon);
 		CharacterState |= EPlayerCharacterState::Armed;
 		bool active = IsActive(static_cast<uint8>(EPlayerCharacterState::Armed));
@@ -206,4 +208,9 @@ void ASurvivorCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Started, this, &ASurvivorCharacter::Reload);
 		EnhancedInputComponent->BindAction(NextWeapon, ETriggerEvent::Started, this, &ASurvivorCharacter::Pickup);
 	}
+}
+
+UAbilitySystemComponent* ASurvivorCharacter::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
 }

@@ -3,6 +3,7 @@
 #include "InputActionValue.h"
 #include "GameFramework/Character.h"
 #include "TheSurvivor/TheSurvivor.h"
+#include "AbilitySystemInterface.h"
 #include "SurvivorCharacter.generated.h"
 
 
@@ -12,6 +13,7 @@ class UInputMappingContext;
 class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
+class USurvivorAbilitySystemComponent;
 /**
  * \copydoc ACharacter
  * \class ASurvivorCharacter
@@ -38,7 +40,7 @@ class UCameraComponent;
  *       in both C++ and Blueprints.
  */
 UCLASS()
-class THESURVIVOR_API ASurvivorCharacter : public ACharacter
+class THESURVIVOR_API ASurvivorCharacter : public ACharacter,public IAbilitySystemInterface
 {
 public:
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
@@ -54,6 +56,8 @@ private:
 	/** Follow camera providing the player's first-person view. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components, meta = (AllowPrivateAccess = "true"))
+	USurvivorAbilitySystemComponent* AbilitySystemComponent;
 	/** the Component responsible for Weapons functionalities ,such as storing weapons , showing player weapons , choosing weapon*/
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UWeaponSystemComponent* WeaponSystemComponent;
@@ -130,4 +134,5 @@ protected:
 	/** @return The follow camera subObject. */
 	NODISCARD FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 #pragma endregion
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 };
