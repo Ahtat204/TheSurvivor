@@ -2,6 +2,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "NpcAIController.h"
 #include "Weapon.h"
 #include "WeaponSystemComponent.h"
 #include "Camera/CameraComponent.h"
@@ -51,6 +52,7 @@ ASurvivorCharacter::ASurvivorCharacter(const FObjectInitializer& ObjectInitializ
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
+	CharacterState=EPlayerCharacterState::Idle;
 }
 
 void ASurvivorCharacter::BeginPlay()
@@ -65,6 +67,8 @@ void ASurvivorCharacter::BeginPlay()
 			Subsystem->AddMappingContext(MainMappingContext, 0);
 		}
 	}
+	
+	if (const auto controller=Cast<ANpcAIController>(GetController()))return;
 	checkf(JumpAction, TEXT("JumpAction is null — assign in the editor"));
 	checkf(MoveAction, TEXT("MoveAction is null — assign in the editor"));
 	checkf(ReloadAction, TEXT("ReloadAction is null — assign in the editor"));
@@ -72,7 +76,7 @@ void ASurvivorCharacter::BeginPlay()
 	checkf(AimAction, TEXT("AimAction is null — assign in the editor"));
 	checkf(NextWeapon, TEXT("NextWeapon InputAction Asset is not assigned"));
 	checkf(MainMappingContext, TEXT("MainMappingContext is not assigned"));
-	CharacterState=EPlayerCharacterState::Idle;
+	
 }
 
 void ASurvivorCharacter::Reload(const FInputActionValue& Value)
