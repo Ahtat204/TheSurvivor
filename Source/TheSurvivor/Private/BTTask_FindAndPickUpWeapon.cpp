@@ -27,8 +27,9 @@ EBTNodeResult::Type UBTTask_FindAndPickUpWeapon::ExecuteTask(UBehaviorTreeCompon
 			{
 				const auto TargetLocation=pawn->GetActorLocation();
 				OwnerComp.GetBlackboardComponent()->SetValueAsVector(GetSelectedBlackboardKey(),TargetLocation);
-				Controller->MoveToLocation(TargetLocation,  true, true, false, true, 0);
-
+				pawn->ActivateState(EPlayerCharacterState::Moving);
+				pawn->AddMovementInput(TargetLocation,1500.0f,true);
+				
 				result=EBTNodeResult::Succeeded;
 				FinishLatentTask(OwnerComp,result);
 				return result;

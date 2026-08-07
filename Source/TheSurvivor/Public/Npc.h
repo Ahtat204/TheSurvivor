@@ -28,4 +28,6 @@ public:
 	ANpc();
 	UFUNCTION()
 	UBehaviorTree* GetBehaviorTree() const { return BehaviorTree; }
+	 void ActivateState(const EPlayerCharacterState state);
+	 void DeactivateState(const EPlayerCharacterState state);
 };

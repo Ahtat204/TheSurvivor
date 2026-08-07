@@ -44,7 +44,7 @@ public:
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 	ASurvivorCharacter();
 
-private:
+protected:
 	GENERATED_BODY()
 	/** used to specify the exact weapon to pick up inside the {@code AActor::NotifyActorBeginOverlap} */
 	TWeakObjectPtr<AWeapon> DetectedWeapon;
@@ -95,7 +95,7 @@ private:
 
 #pragma endregion
 #pragma region StateMachine
-#pragma message(__FILE__ ": there's a 7 byte wasted memory padding in this variable")
+#pragma message(__FILE__ "\n: there's a 7 byte wasted memory padding in this variable")
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true", BitMask))
 	EPlayerCharacterState CharacterState;
 	UFUNCTION(BlueprintCallable, DisplayName="IsActive")

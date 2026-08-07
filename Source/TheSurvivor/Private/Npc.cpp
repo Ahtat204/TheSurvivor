@@ -21,3 +21,13 @@ void ANpc::BeginPlay()
 
 ANpc::ANpc()
 {  }
+
+void ANpc::ActivateState(const EPlayerCharacterState state)
+{
+	this->CharacterState|=state;
+}
+
+void ANpc::DeactivateState(const EPlayerCharacterState state)
+{
+	CharacterState &= state;
+}
