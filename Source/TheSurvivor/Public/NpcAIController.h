@@ -15,6 +15,7 @@ class THESURVIVOR_API ANpcAIController : public AAIController
 
 	GENERATED_BODY()
 
+	/// 
 	ANpc* ControlledPawn;
 protected:
 	virtual void OnPossess(APawn* InPawn) override;

@@ -151,5 +151,5 @@ private:
 
 public:
 	NODISCARD FString GetWeaponName() const { return WeaponName; }
-	void SetWeaponName(const FString& Name) { this->WeaponName = Name; }
+	MAYBE_UNUSED void SetWeaponName(const FString& Name) { this->WeaponName = Name; }
 };

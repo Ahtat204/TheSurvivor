@@ -25,11 +25,12 @@ EBTNodeResult::Type UBTTask_FindAndPickUpWeapon::ExecuteTask(UBehaviorTreeCompon
 			const auto Weapon=UGameplayStatics::GetActorOfClass(GetWorld(),AWeapon::StaticClass());
 			if (Weapon)
 			{
-				const auto TargetLocation=pawn->GetActorLocation();
+				const auto TargetLocation{pawn->GetActorLocation()};
 				OwnerComp.GetBlackboardComponent()->SetValueAsVector(GetSelectedBlackboardKey(),TargetLocation);
 				pawn->ActivateState(EPlayerCharacterState::Moving);
-				pawn->AddMovementInput(TargetLocation,1500.0f,true);
-				
+				//pawn->AddMovementInput(TargetLocation,1500.0f,true);
+				FInputActionValue MockValue{TargetLocation};
+				pawn->Move(MockValue);
 				result=EBTNodeResult::Succeeded;
 				FinishLatentTask(OwnerComp,result);
 				return result;

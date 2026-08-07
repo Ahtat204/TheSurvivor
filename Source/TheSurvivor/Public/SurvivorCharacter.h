@@ -108,6 +108,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+public:
 #pragma region InputsFunctions
 	/** Handles reloading input. */
 	void Reload(const FInputActionValue& Value);
