@@ -2,8 +2,6 @@
 
 
 #include "Npc.h"
-
-#include "AIHelpers.h"
 #include "NpcAIController.h"
 
 ANpc::ANpc(const FObjectInitializer& ObjectInitializer)
