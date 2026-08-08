@@ -19,5 +19,7 @@ class THESURVIVOR_API ASurvivorPlayerState : public APlayerState,public IAbility
 	GENERATED_BODY()
 	explicit ASurvivorPlayerState(const FObjectInitializer& ObjectInitializer);
 	USurvivorAbilitySystemComponent* AbilitySystemComponent;
+public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	virtual void BeginPlay() override;
 };

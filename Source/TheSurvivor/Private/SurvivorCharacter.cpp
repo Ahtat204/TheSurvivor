@@ -9,7 +9,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-
+#include"SurvivorPlayerState.h"
 
 void ASurvivorCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 {
@@ -213,4 +213,24 @@ void ASurvivorCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 UAbilitySystemComponent* ASurvivorCharacter::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
+}
+
+void ASurvivorCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+}
+
+void ASurvivorCharacter::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+	InitAbilitySystemComponent();
+}
+
+void ASurvivorCharacter::InitAbilitySystemComponent()
+{
+	const auto playerState=GetPlayerState<ASurvivorPlayerState>();
+	check(playerState);
+	AbilitySystemComponent=CastChecked<USurvivorAbilitySystemComponent>(playerState->GetAbilitySystemComponent());
+	AbilitySystemComponent->InitAbilityActorInfo(playerState,this);
 }
