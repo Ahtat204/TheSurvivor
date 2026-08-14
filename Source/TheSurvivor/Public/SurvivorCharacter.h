@@ -7,6 +7,7 @@
 #include "SurvivorCharacter.generated.h"
 
 
+class UGameplayAbility;
 class AWeapon;
 class UWeaponSystemComponent;
 class UInputMappingContext;
@@ -61,6 +62,7 @@ private:
 	/** the Component responsible for Weapons functionalities ,such as storing weapons , showing player weapons , choosing weapon*/
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UWeaponSystemComponent* WeaponSystemComponent;
+	
 #pragma endregion
 #pragma region Inputs
 	/** this the main mapping context that will be used tha majority of the time. */
@@ -110,6 +112,7 @@ public:
 	explicit ASurvivorCharacter(const FObjectInitializer& ObjectInitialize);
 
 protected:
+	/// 
 	virtual void BeginPlay() override;
 #pragma region InputsFunctions
 	/** Handles reloading input. */
@@ -125,7 +128,7 @@ protected:
 	/** Handles pickups,Mainly weapon pickup ,since the  	 */
 	void Pickup(const FInputActionValue& Value);
 	/** @note this function is just the first idea of implementing interaction , maybe will be moved to a dedicated Component */
-	MAYBE_UNUSED void Interact(const FInputActionValue& Value);
+	MAYBE_UNUSED void Interact(const FInputActionValue& Value)const;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 #pragma endregion
 #pragma region Getters&setters
@@ -138,4 +141,7 @@ protected:
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
 	void InitAbilitySystemComponent();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TArray<TSubclassOf<UGameplayAbility>>  PlayerAbilities;
+	void GiveAbilities();
 };

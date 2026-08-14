@@ -41,10 +41,6 @@ public:
 #pragma region Methods
 	/** Default constructor. */
 	explicit AWeapon(const FObjectInitializer& FObjectInitializer);
-	/** Called when the game starts or when spawned. */
-	virtual void BeginPlay() override;
-	/** Called every frame. */
-	virtual void Tick(float DeltaTime) override;
 	/**
 	 * Fires a bullet from this weapon.
 	 * Spawns a bullet actor of type `BulletClass`, plays sound and VFX,

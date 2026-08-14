@@ -16,12 +16,14 @@ void ASurvivorCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 	Super::NotifyActorBeginOverlap(OtherActor);
 	if (const auto Gun = Cast<AWeapon>(OtherActor))
 	{
+#if UE_BUILD_DEVELOPMENT || UE_BUILD_TEST || UE_BUILD_DEBUG
 		UE_LOG(LogTemp, Display, TEXT("Your log message here"));
+#endif
 		DetectedWeapon = Gun;
 	}
 }
 
-bool ASurvivorCharacter::IsActive(const uint8 Bitmask)
+inline bool ASurvivorCharacter::IsActive(const uint8 Bitmask)
 {
 	return Bitmask & static_cast<uint8>(CharacterState);;
 }
@@ -72,6 +74,8 @@ void ASurvivorCharacter::BeginPlay()
 	checkf(NextWeapon, TEXT("NextWeapon InputAction Asset is not assigned"));
 	checkf(MainMappingContext, TEXT("MainMappingContext is not assigned"));
 	CharacterState = EPlayerCharacterState::Idle;
+	AbilitySystemComponent->InitAbilityActorInfo(this,this);
+	GiveAbilities();
 }
 
 void ASurvivorCharacter::Reload(const FInputActionValue& Value)
@@ -218,6 +222,8 @@ UAbilitySystemComponent* ASurvivorCharacter::GetAbilitySystemComponent() const
 void ASurvivorCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
+	InitAbilitySystemComponent();
+	GiveAbilities();
 
 }
 
@@ -233,4 +239,16 @@ void ASurvivorCharacter::InitAbilitySystemComponent()
 	check(playerState);
 	AbilitySystemComponent=CastChecked<USurvivorAbilitySystemComponent>(playerState->GetAbilitySystemComponent());
 	AbilitySystemComponent->InitAbilityActorInfo(playerState,this);
+}
+
+void ASurvivorCharacter::GiveAbilities()
+{
+	check(AbilitySystemComponent)
+	if (!HasAuthority()) return;
+	for (auto ability:PlayerAbilities)
+	{
+		const FGameplayAbilitySpec AbilitySpec{ability,1};
+		AbilitySystemComponent->GiveAbility(AbilitySpec);
+	}
+	
 }

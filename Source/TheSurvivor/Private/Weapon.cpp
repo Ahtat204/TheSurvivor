@@ -24,21 +24,6 @@ AWeapon::AWeapon(const FObjectInitializer& FObjectInitializer)
 	NiagraComponent->SetupAttachment(SkeletalMeshComponent);
 
 }
-void AWeapon::BeginPlay()
-{
-	Super::BeginPlay();
-
-	
-}
-
-// Called every frame
-void AWeapon::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
-
 void AWeapon::FireBullet()
 {
 	if (CurrentAmmo==0 && GEngine)
