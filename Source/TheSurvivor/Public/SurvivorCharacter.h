@@ -45,7 +45,7 @@ public:
 	ASurvivorCharacter() {  }
 private:
 	GENERATED_BODY()
-	/** used to specify the exact weapon to pick up inside the {@code AActor::NotifyActorBeginOverlap} */
+	/** used to specify the exact weapon to pick up inside the {@code AActor::NotifyActorBeginOverlap \endcode } */
 	TWeakObjectPtr<AWeapon> DetectedWeapon;
 #pragma region Components
 	/** Camera boom for positioning the follow camera behind the player. */
@@ -97,9 +97,7 @@ private:
 #pragma message(__FILE__ ": there's a 7 byte wasted memory padding in this variable")
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true", BitMask))
 	EPlayerCharacterState CharacterState;
-	UFUNCTION(BlueprintCallable, DisplayName="IsActive")
-	inline bool IsActive(UPARAM(meta = (Bitmask, BitmaskEnum = EPlayerCharacterState)) uint8 Bitmask);
-
+	
 #pragma endregion
 
 public:
@@ -130,4 +128,6 @@ protected:
 	/** @return The follow camera subObject. */
 	NODISCARD FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 #pragma endregion
+	UFUNCTION(BlueprintCallable, DisplayName="IsActive")
+	inline bool IsActive(UPARAM(meta = (Bitmask, BitmaskEnum = EPlayerCharacterState)) uint8 Bitmask);
 };

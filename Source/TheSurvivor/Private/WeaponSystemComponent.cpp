@@ -96,7 +96,7 @@ void UWeaponSystemComponent::AttachWeapon(AWeapon* pickUpWeapon) noexcept
 	}
 }
 
-TArrayView<AWeapon* const> UWeaponSystemComponent::RemoveWeapon(int16 Index)
+TArrayView<AWeapon* const> UWeaponSystemComponent::RemoveWeapon(_Const_ _In_ const uint16 Index)
 {
 	if (Index >= Weapons.Num())
 	{
