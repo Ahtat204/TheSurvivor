@@ -9,8 +9,6 @@
 UBTTask_FindAndPickUpWeapon::UBTTask_FindAndPickUpWeapon(const FObjectInitializer& ObjectInitializer)
 {
 	NodeName = "FindWeapon";
-    
-	// Crucial: Tell the node to filter for Vectors in the behavior tree details panel
 	BlackboardKey.AddVectorFilter(this, GET_MEMBER_NAME_CHECKED(UBTTask_FindAndPickUpWeapon, BlackboardKey));
 }
 
@@ -26,12 +24,11 @@ EBTNodeResult::Type UBTTask_FindAndPickUpWeapon::ExecuteTask(UBehaviorTreeCompon
 	if (!Weapon) return EBTNodeResult::Failed;
 
 	// Set the location on the blackboard
-	FVector TargetLocation = Weapon->GetActorLocation();
-	FNavLocation NavLocation;
+	auto TargetLocation = Weapon->GetActorLocation();
 
-	UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
-	if (NavSys && NavSys->ProjectPointToNavigation(TargetLocation, NavLocation, FVector(1000.f, 1000.f, 100.f)))
+	if (auto NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld()) /*&& NavSys->ProjectPointToNavigation(TargetLocation, NavLocation, FVector(1000.f, 1000.f, 100.f))*/)
 	{
+		FNavLocation NavLocation;
 		TargetLocation = NavLocation.Location; // This ensures the vector sits perfectly on the NavMesh
 	}
 	OwnerComp.GetBlackboardComponent()->SetValueAsVector(GetSelectedBlackboardKey(), TargetLocation);
