@@ -1,49 +1,41 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "BTTask_FindAndPickUpWeapon.h"
-#include"BehaviorTree/BlackboardComponent.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Npc.h"
-#include"NavigationSystem.h"
+#include "NavigationSystem.h"
 #include "NpcAIController.h"
 #include "Weapon.h"
 #include "Kismet/GameplayStatics.h"
 
 UBTTask_FindAndPickUpWeapon::UBTTask_FindAndPickUpWeapon(const FObjectInitializer& ObjectInitializer)
 {
-	NodeName="FindWeapon";
+	NodeName = "FindWeapon";
+    
+	// Crucial: Tell the node to filter for Vectors in the behavior tree details panel
+	BlackboardKey.AddVectorFilter(this, GET_MEMBER_NAME_CHECKED(UBTTask_FindAndPickUpWeapon, BlackboardKey));
 }
 
 EBTNodeResult::Type UBTTask_FindAndPickUpWeapon::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	EBTNodeResult::Type result;
-	//return Super::ExecuteTask(OwnerComp, NodeMemory);
-	if (const auto Controller=Cast<ANpcAIController>(OwnerComp.GetOwner()))
+	const auto Controller = Cast<ANpcAIController>(OwnerComp.GetOwner());
+	if (!Controller) return EBTNodeResult::Failed;
+
+	const auto Pawn = Cast<ANpc>(Controller->GetPawn());
+	if (!Pawn) return EBTNodeResult::Failed;
+
+	const auto Weapon = UGameplayStatics::GetActorOfClass(GetWorld(), AWeapon::StaticClass());
+	if (!Weapon) return EBTNodeResult::Failed;
+
+	// Set the location on the blackboard
+	FVector TargetLocation = Weapon->GetActorLocation();
+	FNavLocation NavLocation;
+
+	UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
+	if (NavSys && NavSys->ProjectPointToNavigation(TargetLocation, NavLocation, FVector(1000.f, 1000.f, 100.f)))
 	{
-		if (const auto pawn=Cast<ANpc>(Controller->GetPawn()))
-		{
-			const auto Weapon=UGameplayStatics::GetActorOfClass(GetWorld(),AWeapon::StaticClass());
-			if (Weapon)
-			{
-				const auto TargetLocation{pawn->GetActorLocation()};
-				OwnerComp.GetBlackboardComponent()->SetValueAsVector(GetSelectedBlackboardKey(),TargetLocation);
-				pawn->ActivateState(EPlayerCharacterState::Moving);
-				//pawn->AddMovementInput(TargetLocation,1500.0f,true);
-				FInputActionValue MockValue{TargetLocation};
-				pawn->Move(MockValue);
-				result=EBTNodeResult::Succeeded;
-				FinishLatentTask(OwnerComp,result);
-				return result;
-			}
-			 result=EBTNodeResult::Failed;
-			FinishLatentTask(OwnerComp,result);
-			return result;
-		}
-		 result=EBTNodeResult::Failed;
-		FinishLatentTask(OwnerComp,result);
-		return result;
+		TargetLocation = NavLocation.Location; // This ensures the vector sits perfectly on the NavMesh
 	}
-	 result=EBTNodeResult::Failed;
-	FinishLatentTask(OwnerComp,result);
-	return result;
+	OwnerComp.GetBlackboardComponent()->SetValueAsVector(GetSelectedBlackboardKey(), TargetLocation);
+
+	// Clean exit: No FinishLatentTask needed for instant success
+	return EBTNodeResult::Succeeded;
 }

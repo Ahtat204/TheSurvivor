@@ -8,6 +8,7 @@ ANpc::ANpc(const FObjectInitializer& ObjectInitializer)
 {
 	AIControllerClass=ANpcAIController::StaticClass();
 	AutoPossessAI=EAutoPossessAI::PlacedInWorld;
+	
 }
 
 void ANpc::BeginPlay()
@@ -17,15 +18,9 @@ void ANpc::BeginPlay()
 	
 }
 
+
+
 ANpc::ANpc()
 {  }
 
-void ANpc::ActivateState(const EPlayerCharacterState state)
-{
-	this->CharacterState|=state;
-}
 
-void ANpc::DeactivateState(const EPlayerCharacterState state)
-{
-	CharacterState &= state;
-}

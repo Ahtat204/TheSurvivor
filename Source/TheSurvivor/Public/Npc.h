@@ -23,11 +23,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AI", meta=(AllowPrivateAccess=true))
 	UBehaviorTree* BehaviorTree;
 	virtual void BeginPlay() override;
-
+	//virtual void Tick(float DeltaTime) override;
 public:
 	ANpc();
 	UFUNCTION()
 	UBehaviorTree* GetBehaviorTree() const { return BehaviorTree; }
-	 void ActivateState(const EPlayerCharacterState state);
-	 void DeactivateState(const EPlayerCharacterState state);
 };

@@ -21,5 +21,6 @@ protected:
 	virtual void OnPossess(APawn* InPawn) override;
 public:
 	explicit ANpcAIController(const FObjectInitializer& ObjectInitializer);
+	void MoveToTargetLocation(AActor* InActor);
 	
 };
