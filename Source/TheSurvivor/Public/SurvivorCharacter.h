@@ -4,9 +4,11 @@
 #include "GameFramework/Character.h"
 #include "TheSurvivor/TheSurvivor.h"
 #include "AbilitySystemInterface.h"
+#include "GameplayEffect.h"
 #include "SurvivorCharacter.generated.h"
 
 
+class USurvivorAttributeSet;
 class UGameplayAbility;
 class AWeapon;
 class UWeaponSystemComponent;
@@ -41,7 +43,7 @@ class USurvivorAbilitySystemComponent;
  *       in both C++ and Blueprints.
  */
 UCLASS()
-class THESURVIVOR_API ASurvivorCharacter : public ACharacter,public IAbilitySystemInterface
+class THESURVIVOR_API ASurvivorCharacter : public ACharacter, public IAbilitySystemInterface
 {
 public:
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
@@ -62,7 +64,11 @@ private:
 	/** the Component responsible for Weapons functionalities ,such as storing weapons , showing player weapons , choosing weapon*/
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UWeaponSystemComponent* WeaponSystemComponent;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TArray<TSubclassOf<UGameplayAbility>> PlayerAbilities;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<USurvivorAttributeSet> AttributeSet;
+	TSubclassOf<UGameplayEffect> DefaultAttributeEffect;
 #pragma endregion
 #pragma region Inputs
 	/** this the main mapping context that will be used tha majority of the time. */
@@ -128,7 +134,7 @@ protected:
 	/** Handles pickups,Mainly weapon pickup ,since the  	 */
 	void Pickup(const FInputActionValue& Value);
 	/** @note this function is just the first idea of implementing interaction , maybe will be moved to a dedicated Component */
-	MAYBE_UNUSED void Interact(const FInputActionValue& Value)const;
+	MAYBE_UNUSED void Interact(const FInputActionValue& Value) const;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 #pragma endregion
 #pragma region Getters&setters
@@ -136,12 +142,12 @@ protected:
 	NODISCARD FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** @return The follow camera subObject. */
 	NODISCARD FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+	NODISCARD FORCEINLINE USurvivorAttributeSet* GetAttributeSet() const { return AttributeSet; }
 #pragma endregion
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
 	void InitAbilitySystemComponent();
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
-	TArray<TSubclassOf<UGameplayAbility>>  PlayerAbilities;
-	void GiveAbilities();
+   NOINLINE void GiveAbilities()const;
+	void InitDefaultAttributes() const;
 };

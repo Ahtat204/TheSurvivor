@@ -233,7 +233,7 @@ void ASurvivorCharacter::OnRep_PlayerState()
 	InitAbilitySystemComponent();
 }
 
-void ASurvivorCharacter::InitAbilitySystemComponent()
+void ASurvivorCharacter::InitAbilitySystemComponent() 
 {
 	const auto playerState=GetPlayerState<ASurvivorPlayerState>();
 	check(playerState);
@@ -241,7 +241,7 @@ void ASurvivorCharacter::InitAbilitySystemComponent()
 	AbilitySystemComponent->InitAbilityActorInfo(playerState,this);
 }
 
-void ASurvivorCharacter::GiveAbilities()
+void ASurvivorCharacter::GiveAbilities() const
 {
 	check(AbilitySystemComponent)
 	if (!HasAuthority()) return;
@@ -251,4 +251,11 @@ void ASurvivorCharacter::GiveAbilities()
 		AbilitySystemComponent->GiveAbility(AbilitySpec);
 	}
 	
+}
+
+void ASurvivorCharacter::InitDefaultAttributes() const
+{
+	if (!AbilitySystemComponent || !DefaultAttributeEffect) return;
+	 auto  EffectContext=AbilitySystemComponent->MakeEffectContext();
+	EffectContext.AddSourceObject(this);
 }

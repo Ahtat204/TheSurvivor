@@ -18,29 +18,33 @@ UCLASS()
 class THESURVIVOR_API USurvivorAttributeSet : public UAttributeSet
 {
 	GENERATED_BODY()
+
 public:
 	explicit USurvivorAttributeSet(const FObjectInitializer& ObjectInitializer);
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ability | GamePlay Attribute", meta = (AllowPrivateAccess = "true"))
-	FGameplayAttributeData Health = 100.0f;
+	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
+	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ability | GamePlay Attribute",
+		meta = (AllowPrivateAccess = "true"))
+	FGameplayAttributeData Health{100.0f};
 	ATTRIBUTE_ACCESSORS(USurvivorAttributeSet, Health)
 
 	UPROPERTY()
-	FGameplayAttributeData MaxHealth = 100.0f;
+	FGameplayAttributeData MaxHealth{100.0f};
 	ATTRIBUTE_ACCESSORS(USurvivorAttributeSet, MaxHealth)
 
 	UPROPERTY()
-	FGameplayAttributeData Stamina = 100.0f;
+	FGameplayAttributeData Stamina{100.0f};
 	ATTRIBUTE_ACCESSORS(USurvivorAttributeSet, Stamina)
 
 	UPROPERTY()
-	FGameplayAttributeData MaxStamina = 100.0f;
+	FGameplayAttributeData MaxStamina{100.0f};
 	ATTRIBUTE_ACCESSORS(USurvivorAttributeSet, MaxStamina)
 
 	UPROPERTY()
-	FGameplayAttributeData Strength = 100.0f;
+	FGameplayAttributeData Strength{100.0f};
 	ATTRIBUTE_ACCESSORS(USurvivorAttributeSet, Strength)
 
 	UPROPERTY()
-	FGameplayAttributeData MaxStrength = 100.0f;
+	FGameplayAttributeData MaxStrength{100.0f};
 	ATTRIBUTE_ACCESSORS(USurvivorAttributeSet, MaxStrength)
 };
