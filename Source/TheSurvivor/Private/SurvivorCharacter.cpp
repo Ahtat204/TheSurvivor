@@ -3,7 +3,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Weapon.h"
-#include "TheSurvivor/Public/AbilitySystem/SurvivorAbilitySystemComponent.h"
+#include "SurvivorAbilitySystemComponent.h"
 #include "WeaponSystemComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"

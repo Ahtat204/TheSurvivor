@@ -13,5 +13,5 @@ UCLASS()
 class THESURVIVOR_API USurvivorGameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
-	virtual void ExecuteAbility();
+	void ExecuteAbility();
 };

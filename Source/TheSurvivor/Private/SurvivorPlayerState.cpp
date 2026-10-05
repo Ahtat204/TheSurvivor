@@ -2,8 +2,8 @@
 
 #include "SurvivorPlayerState.h"
 
-#include "AbilitySystem/SurvivorAttributeSet.h"
-#include"TheSurvivor/Public/AbilitySystem/SurvivorAbilitySystemComponent.h"
+#include "SurvivorAttributeSet.h"
+#include"SurvivorAbilitySystemComponent.h"
 
 ASurvivorPlayerState::ASurvivorPlayerState(const FObjectInitializer& ObjectInitializer)
 {

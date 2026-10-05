@@ -7,6 +7,7 @@
 #define MAYBE_UNUSED [[maybe_unused]]
 #define NOINLINE [[msvc::noinline]]
 #define LOCOMOTION_MASK (static_cast<uint8>(0x0F)) // means the movement states are in the lowest 4 bytes
+#pragma region Enums
 /**
  * @enum EWeaponType
  * @brief represents the type/size of the weapon ,used in animation to choose the proper animation for the weapon
@@ -79,3 +80,5 @@ inline void Toggle(EPlayerCharacterState CharacterState)
 
 //ENUM_CLASS_FLAGS to enable bitwise operators (| , & , ^) for this enum
 ENUM_CLASS_FLAGS(EPlayerCharacterState)
+#pragma endregion Enums
+
