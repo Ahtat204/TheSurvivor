@@ -1,6 +1,8 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "SurvivorPlayerState.h"
+
+#include "AbilitySystem/SurvivorAttributeSet.h"
 #include"TheSurvivor/Public/AbilitySystem/SurvivorAbilitySystemComponent.h"
 
 ASurvivorPlayerState::ASurvivorPlayerState(const FObjectInitializer& ObjectInitializer)
@@ -8,6 +10,7 @@ ASurvivorPlayerState::ASurvivorPlayerState(const FObjectInitializer& ObjectIniti
 	NetUpdateFrequency=100.0f;
 	AbilitySystemComponent=CreateDefaultSubobject<USurvivorAbilitySystemComponent>("AbilitySystemComponent");
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
+	AttributeSet=CreateDefaultSubobject<USurvivorAttributeSet>("AttributeSet");
 }
 
 UAbilitySystemComponent* ASurvivorPlayerState::GetAbilitySystemComponent() const

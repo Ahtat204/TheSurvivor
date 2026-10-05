@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
 #include "AbilitySystemInterface.h"
 #include "GameFramework/PlayerState.h"
 #include "SurvivorPlayerState.generated.h"
 
 
 class USurvivorAbilitySystemComponent;
+class USurvivorAttributeSet;
 /**
  * 
  */
@@ -17,9 +17,12 @@ UCLASS()
 class THESURVIVOR_API ASurvivorPlayerState : public APlayerState,public IAbilitySystemInterface
 {
 	GENERATED_BODY()
-	explicit ASurvivorPlayerState(const FObjectInitializer& ObjectInitializer);
-	USurvivorAbilitySystemComponent* AbilitySystemComponent;
+	/// 
+	TObjectPtr<USurvivorAbilitySystemComponent> AbilitySystemComponent;
+	TObjectPtr<USurvivorAttributeSet> AttributeSet;
 public:
+	explicit ASurvivorPlayerState(const FObjectInitializer& ObjectInitializer);
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	USurvivorAttributeSet* GetAttributeSet() const{return AttributeSet;}
 	virtual void BeginPlay() override;
 };

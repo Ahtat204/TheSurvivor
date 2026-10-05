@@ -50,7 +50,7 @@ ASurvivorCharacter::ASurvivorCharacter(const FObjectInitializer& ObjectInitializ
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
-	AbilitySystemComponent=CreateDefaultSubobject<USurvivorAbilitySystemComponent>("AbilitySystemComponent");
+	AbilitySystemComponent = CreateDefaultSubobject<USurvivorAbilitySystemComponent>("AbilitySystemComponent");
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 }
 
@@ -74,7 +74,7 @@ void ASurvivorCharacter::BeginPlay()
 	checkf(NextWeapon, TEXT("NextWeapon InputAction Asset is not assigned"));
 	checkf(MainMappingContext, TEXT("MainMappingContext is not assigned"));
 	CharacterState = EPlayerCharacterState::Idle;
-	AbilitySystemComponent->InitAbilityActorInfo(this,this);
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 	GiveAbilities();
 }
 
@@ -133,6 +133,7 @@ void ASurvivorCharacter::Shoot(const FInputActionValue& Value)
 
 void ASurvivorCharacter::Aim(const FInputActionValue& Value)
 {
+	if (Controller==nullptr) return;
 	if (!ensureMsgf(WeaponSystemComponent, TEXT("WeaponSystemComponent is null"))) return;
 	if (WeaponSystemComponent->CurrentWeapon == nullptr) return;
 	const auto bIsAiming = Value.Get<bool>();
@@ -176,12 +177,10 @@ void ASurvivorCharacter::Move(const FInputActionValue& Value)
 
 void ASurvivorCharacter::Look(const FInputActionValue& Value)
 {
+	if (Controller == nullptr) return;
 	const auto LookAxisVector = Value.Get<FVector2D>();
-	if (Controller != nullptr)
-	{
-		AddControllerYawInput(LookAxisVector.X);
-		AddControllerPitchInput(LookAxisVector.Y);
-	}
+	AddControllerYawInput(LookAxisVector.X);
+	AddControllerPitchInput(LookAxisVector.Y);
 }
 
 void ASurvivorCharacter::Pickup(const FInputActionValue& Value)
@@ -195,6 +194,10 @@ void ASurvivorCharacter::Pickup(const FInputActionValue& Value)
 		bool active = IsActive(static_cast<uint8>(EPlayerCharacterState::Armed));
 		UE_LOG(LogTemp, Warning, TEXT("Player is aiming %d"), active);
 	}
+}
+
+void ASurvivorCharacter::Interact(const FInputActionValue& Value) const
+{
 }
 
 void ASurvivorCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -224,7 +227,6 @@ void ASurvivorCharacter::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 	InitAbilitySystemComponent();
 	GiveAbilities();
-
 }
 
 void ASurvivorCharacter::OnRep_PlayerState()
@@ -233,29 +235,33 @@ void ASurvivorCharacter::OnRep_PlayerState()
 	InitAbilitySystemComponent();
 }
 
-void ASurvivorCharacter::InitAbilitySystemComponent() 
+void ASurvivorCharacter::InitAbilitySystemComponent()
 {
-	const auto playerState=GetPlayerState<ASurvivorPlayerState>();
+	const auto playerState = GetPlayerState<ASurvivorPlayerState>();
 	check(playerState);
-	AbilitySystemComponent=CastChecked<USurvivorAbilitySystemComponent>(playerState->GetAbilitySystemComponent());
-	AbilitySystemComponent->InitAbilityActorInfo(playerState,this);
+	AbilitySystemComponent = CastChecked<USurvivorAbilitySystemComponent>(playerState->GetAbilitySystemComponent());
+	AbilitySystemComponent->InitAbilityActorInfo(playerState, this);
 }
 
 void ASurvivorCharacter::GiveAbilities() const
 {
 	check(AbilitySystemComponent)
 	if (!HasAuthority()) return;
-	for (auto ability:PlayerAbilities)
+	for (auto ability : PlayerAbilities)
 	{
-		const FGameplayAbilitySpec AbilitySpec{ability,1};
+		const FGameplayAbilitySpec AbilitySpec{ability, 1};
 		AbilitySystemComponent->GiveAbility(AbilitySpec);
 	}
-	
 }
 
 void ASurvivorCharacter::InitDefaultAttributes() const
 {
 	if (!AbilitySystemComponent || !DefaultAttributeEffect) return;
-	 auto  EffectContext=AbilitySystemComponent->MakeEffectContext();
+	auto  EffectContext = AbilitySystemComponent->MakeEffectContext();
 	EffectContext.AddSourceObject(this);
+	const auto SpecHandle=AbilitySystemComponent->MakeOutgoingSpec(DefaultAttributeEffect,1.0f,EffectContext);
+	if (SpecHandle.IsValid())
+	{
+		AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+	}
 }
