@@ -4,25 +4,28 @@
 #include "NpcAIController.h"
 #include "Npc.h"
 #include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 void ANpcAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 	if (const auto pawn = Cast<ANpc>(InPawn))
 	{
-		ControlledPawn = pawn;
-		if (const auto BehaviorTree = ControlledPawn->GetBehaviorTree())
+		if (IsValid(BehaviorTree))
 		{
-			UBlackboardComponent* BlackBoard;
-			UseBlackboard(BehaviorTree->BlackboardAsset, BlackBoard);
-			Blackboard = BlackBoard;
+			ControlledPawn = pawn;
+			UseBlackboard(BehaviorTree->BlackboardAsset, BlackboardComponent);
+			Blackboard = BlackboardComponent;
 			RunBehaviorTree(BehaviorTree);
+			BehaviorTreeComponent->StartTree(*BehaviorTree);
 		}
 	}
 }
 
 ANpcAIController::ANpcAIController(const FObjectInitializer& ObjectInitializer)
 {
+	BlackboardComponent = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackboardComponent"));
+	BehaviorTreeComponent = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BehaviorTreeComponent"));
 }
 
 void ANpcAIController::MoveToTargetLocation(AActor* InActor)
@@ -43,5 +46,4 @@ void ANpcAIController::MoveToTargetLocation(AActor* InActor)
 		UE_LOG(LogTemp, Warning, TEXT("MoveToTargetActor: Move request failed"));
 #endif
 	}
-	
 }

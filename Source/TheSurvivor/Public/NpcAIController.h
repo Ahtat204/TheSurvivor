@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "TheSurvivor/TheSurvivor.h"
 #include "NpcAIController.generated.h"
+class UBehaviorTreeComponent;
 class ANpc;
 /**
  * 
@@ -18,9 +20,17 @@ class THESURVIVOR_API ANpcAIController : public AAIController
 	/// 
 	ANpc* ControlledPawn;
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AI", meta=(AllowPrivateAccess=true))
+	UBehaviorTree* BehaviorTree;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AI", meta=(AllowPrivateAccess=true))
+	UBehaviorTreeComponent* BehaviorTreeComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AI", meta=(AllowPrivateAccess=true))
+	UBlackboardComponent* BlackboardComponent;
 	virtual void OnPossess(APawn* InPawn) override;
 public:
 	explicit ANpcAIController(const FObjectInitializer& ObjectInitializer);
 	void MoveToTargetLocation(AActor* InActor);
+	NODISCARD UBehaviorTree* GetBehaviorTree() const { return BehaviorTree; }
+	NODISCARD UBehaviorTreeComponent* GetBehaviorTreeComponent() const { return BehaviorTreeComponent; }
 	
 };
