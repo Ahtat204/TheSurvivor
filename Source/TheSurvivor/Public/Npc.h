@@ -6,6 +6,7 @@
 #include "SurvivorCharacter.h"
 #include"NavigationSystem.h"
 #include "NpcAIController.h"
+#include "NpcBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Npc.generated.h"
 
@@ -14,13 +15,9 @@ class UBehaviorTree;
  * 
  */
 UCLASS()
-class ANpc : public ASurvivorCharacter
+class ANpc : public ANpcBase
 {
 	GENERATED_BODY()
-
-public:
-
-
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AI", meta=(AllowPrivateAccess=true))
 	UBehaviorTree* BehaviorTree;
@@ -41,6 +38,6 @@ public:
 			GetCharacterMovement()->MaxWalkSpeed = 600.f;
 		}
 	};
-	UFUNCTION()
-	UBehaviorTree* GetBehaviorTree() const { return BehaviorTree; }
+
+	NODISCARD UBehaviorTree* GetBehaviorTree() const { return BehaviorTree; }
 };
