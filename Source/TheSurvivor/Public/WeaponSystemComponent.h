@@ -26,7 +26,7 @@ class THESURVIVOR_API UWeaponSystemComponent : public UActorComponent
 	GENERATED_BODY()
 
 	/** Internal registry of all weapons currently possessed by the owner. */
-	TArray<AWeapon*> Weapons;
+	TArray<AWeapon*> Weapons={};
 
 public:
 	/** Pointer to the currently active weapon in the character's hands. */
@@ -54,7 +54,7 @@ public:
 	 * @note Uses NODISCARD to ensure the caller validates the returned pointer.
 	 */
 
-	_Ret_maybenull_ NODISCARD inline AWeapon* GetWeapon(_Const_ _In_ uint16 Index) const;
+	_Ret_maybenull_ NODISCARD inline AWeapon* GetWeapon(_Const_ _In_ const uint16 Index) const;
 
 	/**  @brief Returns a non-owning, thread-safe view of the weapon list.
     @note This is high-performance (no copy, no allocation).
@@ -73,7 +73,7 @@ public:
 	 * @param Index The index of the weapon to remove.
 	 * @return The resulting weapon array after removal.
 	 */
-	TArrayView<AWeapon* const> RemoveWeapon(_In_ int16 Index);
+	TArrayView<AWeapon* const> RemoveWeapon(_Const_ _In_ const uint16 Index);
 
 	/**
 	 * @brief Observes the current WeaponState to trigger firing logic.

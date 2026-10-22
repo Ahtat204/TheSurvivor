@@ -93,16 +93,17 @@ public:
 	/** Niagara component for visual gunfire effect (e.g., muzzle flash). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Components")
 	UNiagaraComponent* NiagraComponent;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Enumerations", meta = (ShortTooltip="the Type of the weapon"))
-	EWeaponType WeaponType;
-
-public:
 	/**
  * this field specify the bone where the weapon should be attached
  * @remark :this is a temporary solution , since it doesn't make sense a weapon choosing where to be attached
  */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Components", meta = (AllowPrivateAccess = "true"))
 	FString Bone;
+#pragma message(__FILE__ ": there's a 7 byte wasted memory padding in this variable")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Enumerations", meta = (ShortTooltip="the Type of the weapon"))
+	EWeaponType WeaponType;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Conditions", meta = (ShortTooltip="the Type of the weapon"))
+	uint8 bCanFire : 1;
 #pragma endregion
 };
 
