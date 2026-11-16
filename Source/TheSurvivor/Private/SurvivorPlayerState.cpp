@@ -4,7 +4,6 @@
 
 #include "SurvivorAttributeSet.h"
 #include"SurvivorAbilitySystemComponent.h"
-
 ASurvivorPlayerState::ASurvivorPlayerState(const FObjectInitializer& ObjectInitializer)
 {
 	NetUpdateFrequency=100.0f;

@@ -3,13 +3,15 @@
 
 #include "SurvivorIAbilitySystemInputConfig.h"
 
+#include "InputConfig.h"
+
 const UInputAction* USurvivorIAbilitySystemInputConfig::FindAbilityInputActionForTag(const FGameplayTag& InputTag) const
 {
-	for (const auto& ActionConfig : AbilityInputActions)
+	for (const auto& [InputAction, InputTag] : AbilityInputActions)
 	{
-		if (ActionConfig.InputAction && ActionConfig.InputTag.MatchesTagExact(InputTag))
+		if (InputAction && InputTag.MatchesTagExact(InputTag))
 		{
-			return ActionConfig.InputAction;
+			return InputAction;
 		}
 	}
 	return nullptr;

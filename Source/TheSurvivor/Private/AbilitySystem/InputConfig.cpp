@@ -5,12 +5,13 @@
 
 const UInputAction* UInputConfig::FindInputActionForTag(const FGameplayTag& InputTag, bool bLogNotFound) const
 {
-	for (const auto& Action : TaggedInputActions)
+	for (const auto& [Action, Tag] : TaggedInputActions)
 	{
-		if (Action.InputAction && Action.InputTag == InputTag)
+		if (Action && Tag.MatchesTagExact(InputTag) )
 		{
-			return Action.InputAction;
+			return Action;
 		}
 	}
+	UE_LOG(LogTemp, Warning, TEXT("InputAction not found"));
 	return nullptr;
 }

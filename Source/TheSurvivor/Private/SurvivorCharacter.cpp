@@ -238,7 +238,7 @@ void ASurvivorCharacter::OnRep_PlayerState()
 void ASurvivorCharacter::InitAbilitySystemComponent()
 {
 	const auto playerState = GetPlayerState<ASurvivorPlayerState>();
-	check(playerState);
+	ensureAlwaysMsgf(playerState,TEXT("player state is null"));
 	AbilitySystemComponent = CastChecked<USurvivorAbilitySystemComponent>(playerState->GetAbilitySystemComponent());
 	AbilitySystemComponent->InitAbilityActorInfo(playerState, this);
 }

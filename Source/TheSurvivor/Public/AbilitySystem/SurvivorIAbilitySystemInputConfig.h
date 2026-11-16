@@ -3,9 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "FInputActionConfig.h"
 #include "Engine/DataAsset.h"
 #include "SurvivorIAbilitySystemInputConfig.generated.h"
+struct FGameplayTag;
+struct FInputActionConfig;
 class UInputAction;
 /**
  * 
