@@ -73,6 +73,7 @@ void ASurvivorCharacter::BeginPlay()
 	checkf(AimAction, TEXT("AimAction is null — assign in the editor"));
 	checkf(NextWeapon, TEXT("NextWeapon InputAction Asset is not assigned"));
 	checkf(MainMappingContext, TEXT("MainMappingContext is not assigned"));
+	ensureMsgf(AbilitySystemComponent != nullptr, TEXT("AbilitySystemComponent is null"));
 	CharacterState = EPlayerCharacterState::Idle;
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 	GiveAbilities();
@@ -202,7 +203,7 @@ void ASurvivorCharacter::Interact(const FInputActionValue& Value) const
 
 void ASurvivorCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-	if (auto EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+	if (const auto EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
