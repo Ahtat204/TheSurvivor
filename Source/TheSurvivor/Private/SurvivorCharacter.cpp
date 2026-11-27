@@ -3,11 +3,13 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Weapon.h"
+#include "SurvivorAbilitySystemComponent.h"
 #include "WeaponSystemComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include"SurvivorPlayerState.h"
 
 
 void ASurvivorCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
@@ -15,13 +17,15 @@ void ASurvivorCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 	Super::NotifyActorBeginOverlap(OtherActor);
 	if (const auto Gun = Cast<AWeapon>(OtherActor))
 	{
+#if UE_BUILD_DEVELOPMENT || UE_BUILD_TEST || UE_BUILD_DEBUG
+		UE_LOG(LogTemp, Display, TEXT("Your log message here"));
+#endif
 		LOG("Your log message here");
 		DetectedWeapon = Gun;
 	}
 }
 
-
-bool ASurvivorCharacter::IsActive(const uint8 Bitmask)
+inline bool ASurvivorCharacter::IsActive(const uint8 Bitmask)
 {
 	return Bitmask & static_cast<uint8>(CharacterState);;
 }
@@ -48,6 +52,8 @@ ASurvivorCharacter::ASurvivorCharacter(const FObjectInitializer& ObjectInitializ
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
+	AbilitySystemComponent = CreateDefaultSubobject<USurvivorAbilitySystemComponent>("AbilitySystemComponent");
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 }
 
 void ASurvivorCharacter::BeginPlay()
@@ -69,6 +75,10 @@ void ASurvivorCharacter::BeginPlay()
 	checkf(AimAction, TEXT("AimAction is null — assign in the editor"));
 	checkf(NextWeapon, TEXT("NextWeapon InputAction Asset is not assigned"));
 	checkf(MainMappingContext, TEXT("MainMappingContext is not assigned"));
+	ensureMsgf(AbilitySystemComponent != nullptr, TEXT("AbilitySystemComponent is null"));
+	CharacterState = EPlayerCharacterState::Idle;
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	GiveAbilities();
 	CharacterState=EPlayerCharacterState::Idle;
 }
 
@@ -89,6 +99,7 @@ void ASurvivorCharacter::Reload(const FInputActionValue& Value)
 	checkf(ReloadMontage, TEXT("Reload animation not assigned for %s"),
 	       *WeaponSystemComponent->CurrentWeapon->GetName());
 #endif
+	CharacterState |= EPlayerCharacterState::Reloading;
 	PlayAnimMontage(ReloadMontage);
 }
 
@@ -125,8 +136,10 @@ void ASurvivorCharacter::Shoot(const FInputActionValue& Value)
 		CharacterState &= ~EPlayerCharacterState::Firing;
 	}
 }
+
 void ASurvivorCharacter::Aim(const FInputActionValue& Value)
 {
+	if (Controller==nullptr) return;
 	if (!ensureMsgf(WeaponSystemComponent, TEXT("WeaponSystemComponent is null"))) return;
 	if (WeaponSystemComponent->CurrentWeapon == nullptr) return;
 	const auto bIsAiming = Value.Get<bool>();
@@ -170,6 +183,7 @@ void ASurvivorCharacter::Move(const FInputActionValue& Value)
 
 void ASurvivorCharacter::Look(const FInputActionValue& Value)
 {
+	if (Controller == nullptr) return;
 	const auto LookAxisVector = Value.Get<FVector2D>();
 	if (Controller != nullptr)
 	{
@@ -183,7 +197,7 @@ void ASurvivorCharacter::Pickup(const FInputActionValue& Value)
 	if (DetectedWeapon == nullptr) return;
 	if (Value.Get<bool>())
 	{
-		auto weapon = Cast<AWeapon>(DetectedWeapon);
+		const auto weapon = Cast<AWeapon>(DetectedWeapon);
 		[[maybe_unused]] const auto Weapons = WeaponSystemComponent->AddWeapon(weapon);
 		CharacterState |= EPlayerCharacterState::Armed;
 		bool active = IsActive(static_cast<uint8>(EPlayerCharacterState::Armed));
@@ -191,9 +205,13 @@ void ASurvivorCharacter::Pickup(const FInputActionValue& Value)
 	}
 }
 
+void ASurvivorCharacter::Interact(const FInputActionValue& Value) const
+{
+}
+
 void ASurvivorCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-	if (auto EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+	if (const auto EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
@@ -205,5 +223,54 @@ void ASurvivorCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Canceled, this, &ASurvivorCharacter::Shoot);
 		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Started, this, &ASurvivorCharacter::Reload);
 		EnhancedInputComponent->BindAction(NextWeapon, ETriggerEvent::Started, this, &ASurvivorCharacter::Pickup);
+	}
+}
+
+UAbilitySystemComponent* ASurvivorCharacter::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
+}
+
+void ASurvivorCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	InitAbilitySystemComponent();
+	GiveAbilities();
+}
+
+void ASurvivorCharacter::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+	InitAbilitySystemComponent();
+}
+
+void ASurvivorCharacter::InitAbilitySystemComponent()
+{
+	const auto playerState = GetPlayerState<ASurvivorPlayerState>();
+	ensureAlwaysMsgf(playerState,TEXT("player state is null"));
+	AbilitySystemComponent = CastChecked<USurvivorAbilitySystemComponent>(playerState->GetAbilitySystemComponent());
+	AbilitySystemComponent->InitAbilityActorInfo(playerState, this);
+}
+
+void ASurvivorCharacter::GiveAbilities() const
+{
+	check(AbilitySystemComponent)
+	if (!HasAuthority()) return;
+	for (auto ability : PlayerAbilities)
+	{
+		const FGameplayAbilitySpec AbilitySpec{ability, 1};
+		AbilitySystemComponent->GiveAbility(AbilitySpec);
+	}
+}
+
+void ASurvivorCharacter::InitDefaultAttributes() const
+{
+	if (!AbilitySystemComponent || !DefaultAttributeEffect) return;
+	auto  EffectContext = AbilitySystemComponent->MakeEffectContext();
+	EffectContext.AddSourceObject(this);
+	const auto SpecHandle=AbilitySystemComponent->MakeOutgoingSpec(DefaultAttributeEffect,1.0f,EffectContext);
+	if (SpecHandle.IsValid())
+	{
+		AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 	}
 }

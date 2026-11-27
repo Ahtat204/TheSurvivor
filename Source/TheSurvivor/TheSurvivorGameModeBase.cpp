@@ -2,6 +2,7 @@
 
 
 #include "TheSurvivorGameModeBase.h"
+#include"SurvivorPlayerState.h"
 
 ATheSurvivorGameModeBase::ATheSurvivorGameModeBase()
 {
@@ -12,6 +13,7 @@ ATheSurvivorGameModeBase::ATheSurvivorGameModeBase()
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
+	PlayerStateClass=ASurvivorPlayerState::StaticClass();
 
 }
 

@@ -5,7 +5,9 @@
 #include "CoreMinimal.h"
 #define NODISCARD [[nodiscard]]
 #define MAYBE_UNUSED [[maybe_unused]]
+#define NOINLINE [[msvc::noinline]]
 #define LOCOMOTION_MASK (static_cast<uint8>(0x0F)) // means the movement states are in the lowest 4 bytes
+#pragma region Enums
 /**
  * @enum EWeaponType
  * @brief represents the type/size of the weapon ,used in animation to choose the proper animation for the weapon
@@ -24,8 +26,7 @@ enum class EWeaponType:uint8
 };
 
 
-#define LOG(msg) UE_LOG(LogTemp, Display, TEXT(msg))
-//UE_LOG(msg, __FILE__, __LINE__, __func__)
+#define LOG(msg) UE_LOG(msg, __FILE__, __LINE__, __func__)
 
 /**@enum EPlayerCharacterState
  * @brief Defines the high-level traversal and locomotion state of the character.
@@ -61,9 +62,10 @@ enum class EPlayerCharacterState : uint8
 	Crouch =3 UMETA(DisplayName="Crouching",ToolTip="Indicates the Player is Crouching"),
 	// --- ZONE 2: ACTION FLAGS (Additive: Bits 4-7) ---
 	// We start at 1<<4 to avoid touching the Locomotion bits.
-	Armed       = 1 << 4 UMETA(DisplayName="Armed",ToolTip="Indicates that the player is Armed"), // 0001 0000 (16)
-	Firing      = 1 << 5 UMETA(DisplayName="Shooting",ToolTip="Indicates that the player is Shooting"), // 0010 0000 (32)
-	Aiming   = 1 << 6 UMETA(DisplayName="Aiming",ToolTip="Indicates that the player is Aiming"), // 0100 0000 (64)
+	Armed       = 1 << 4 UMETA(DisplayName="",ToolTip=""), // 0001 0000 (16)
+	Firing      = 1 << 5 UMETA(DisplayName="",ToolTip=""), // 0010 0000 (32)
+	Reloading   = 1 << 6 UMETA(DisplayName="",ToolTip=""), // 0100 0000 (64)
+	Aiming      = 1 << 7 UMETA(DisplayName="",ToolTip=""), // 1000 0000 (128)
 };
 //to remove a state (ex:making Player just unarmed while walking ) ,we just do Player.CharacterState &= ~EPlayerCharacterState::Armed;
 
@@ -78,3 +80,5 @@ inline void Toggle(EPlayerCharacterState CharacterState)
 
 //ENUM_CLASS_FLAGS to enable bitwise operators (| , & , ^) for this enum
 ENUM_CLASS_FLAGS(EPlayerCharacterState)
+#pragma endregion Enums
+
