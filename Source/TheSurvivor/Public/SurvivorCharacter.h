@@ -1,5 +1,6 @@
 #pragma once
 #include "CoreMinimal.h"
+#include "AbilitySystemInterface.h"
 #include "InputActionValue.h"
 #include "GameFramework/Character.h"
 #include "TheSurvivor/TheSurvivor.h"
@@ -9,6 +10,7 @@
 
 class USurvivorAttributeSet;
 class UGameplayAbility;
+
 class AWeapon;
 class UWeaponSystemComponent;
 class UInputMappingContext;
@@ -52,10 +54,12 @@ public:
 	 */
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
+	ASurvivorCharacter() {  }
 private:
 	GENERATED_BODY()
 	
 	/** Used to specify the exact weapon to pick up inside the {@code AActor::NotifyActorBeginOverlap} */
+	/** used to specify the exact weapon to pick up inside the {@code AActor::NotifyActorBeginOverlap} */
 	TWeakObjectPtr<AWeapon> DetectedWeapon;
 
 #pragma region Components
@@ -128,6 +132,7 @@ private:
 	/** Input Action for arming the player with a weapon, whether pick up or from weapon inventory. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* NextWeapon;
+
 #pragma endregion
 
 #pragma region StateMachine
@@ -178,10 +183,13 @@ protected:
 	/** @note This function is just the first idea of implementing interaction, maybe will be moved to a dedicated Component. */
 	MAYBE_UNUSED void Interact(const FInputActionValue& Value) const;
 
+
+	/** @note this function is just the first idea of implementing interaction , maybe will be moved to a dedicated Component */
+	MAYBE_UNUSED void Interact(const FInputActionValue& Value);
 	/** 
-	 * Allows the character to bind functionality to input component setups.
-	 * @param PlayerInputComponent Subobject acting as an abstraction layer for raw hardware inputs.
-	 */
+ * Allows the character to bind functionality to input component setups.
+ * @param PlayerInputComponent Subobject acting as an abstraction layer for raw hardware inputs.
+ */
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 #pragma endregion
 

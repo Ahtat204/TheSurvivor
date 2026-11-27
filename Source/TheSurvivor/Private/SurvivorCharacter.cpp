@@ -11,6 +11,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include"SurvivorPlayerState.h"
 
+
 void ASurvivorCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
@@ -19,6 +20,7 @@ void ASurvivorCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 #if UE_BUILD_DEVELOPMENT || UE_BUILD_TEST || UE_BUILD_DEBUG
 		UE_LOG(LogTemp, Display, TEXT("Your log message here"));
 #endif
+		LOG("Your log message here");
 		DetectedWeapon = Gun;
 	}
 }
@@ -77,6 +79,7 @@ void ASurvivorCharacter::BeginPlay()
 	CharacterState = EPlayerCharacterState::Idle;
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 	GiveAbilities();
+	CharacterState=EPlayerCharacterState::Idle;
 }
 
 void ASurvivorCharacter::Reload(const FInputActionValue& Value)
@@ -103,11 +106,12 @@ void ASurvivorCharacter::Reload(const FInputActionValue& Value)
 
 void ASurvivorCharacter::Shoot(const FInputActionValue& Value)
 {
+	
 	if (!ensureMsgf(WeaponSystemComponent, TEXT("WeaponSystemComponent is null"))) return;
 	if (WeaponSystemComponent->CurrentWeapon == nullptr) return;
 	UE_LOG(LogTemp, Warning, TEXT("Player is aiming %hhd"), CharacterState)
-	auto ammo = WeaponSystemComponent->CurrentWeapon->CurrentAmmo;
-	if (ammo == 0)
+	auto ammo=WeaponSystemComponent->CurrentWeapon->CurrentAmmo;
+	if (ammo==0)
 	{
 		CharacterState &= ~EPlayerCharacterState::Firing;
 		return;
@@ -119,12 +123,13 @@ void ASurvivorCharacter::Shoot(const FInputActionValue& Value)
 	 * uint8 current=(uint8)CharacterState & (uint8)EPlayerCharacterState::Aiming | (uint8)EPlayerCharacterState::Armed;
 	 * the OR will never be checked since AND higher precedence that OR
 	 */
-
+	
 	if (current == 0) return;
 	if (bIsShooting)
 	{
 		CharacterState |= EPlayerCharacterState::Firing;
 		WeaponSystemComponent->FireAction(CharacterState);
+		
 	}
 	if (!bIsShooting)
 	{
@@ -140,7 +145,7 @@ void ASurvivorCharacter::Aim(const FInputActionValue& Value)
 	const auto bIsAiming = Value.Get<bool>();
 	uint8 current = static_cast<uint8>(CharacterState) & static_cast<uint8>(EPlayerCharacterState::Armed);
 	if (current == 0)return;
-	bool active = IsActive(static_cast<uint8>(EPlayerCharacterState::Armed));
+	bool active=IsActive(static_cast<uint8>(EPlayerCharacterState::Armed));
 	if (bIsAiming)
 	{
 		CharacterState |= EPlayerCharacterState::Aiming;
@@ -180,8 +185,11 @@ void ASurvivorCharacter::Look(const FInputActionValue& Value)
 {
 	if (Controller == nullptr) return;
 	const auto LookAxisVector = Value.Get<FVector2D>();
-	AddControllerYawInput(LookAxisVector.X);
-	AddControllerPitchInput(LookAxisVector.Y);
+	if (Controller != nullptr)
+	{
+		AddControllerYawInput(LookAxisVector.X);
+		AddControllerPitchInput(LookAxisVector.Y);
+	}
 }
 
 void ASurvivorCharacter::Pickup(const FInputActionValue& Value)
